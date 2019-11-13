@@ -159,6 +159,8 @@ class Dashboard extends Component {
     totalInterest: 0,
     monthlyPayment: 0,
     totalPayment: 0,
+    stockseriesdata: [],
+    selectedstocks: [],
     data: [],
     stored_stocks: JSON.parse(stocksjson),
     stockdata: {
@@ -168,6 +170,9 @@ class Dashboard extends Component {
       series: [
         {
           data: [1, 2, 1, 4, 3, 6, 7, 3, 8, 6, 9]
+        },
+        {
+          data: [1,2,3,4,5]
         }
       ]
     },
@@ -248,8 +253,9 @@ class Dashboard extends Component {
 
   handleChangeStockList = (event,value) => {
     const axios = require('axios');
-
+    let {selectedstocks, stockdata, stockseriesdata} = this.state;
     // Make a request for a user with a given ID
+    selectedstocks.push(event.currentTarget.innerHTML);
     var url = 'http://127.0.0.1:5000/get/daily_price/' + event.currentTarget.innerHTML + '/d/d';
     console.log(url);
     let this2 = this;
@@ -265,58 +271,35 @@ class Dashboard extends Component {
           newArray.push(temp);
         }
         console.log(newArray);
+        let stocklist ="";
+        for (const ticker of selectedstocks)
+        {
+          stocklist += ticker + ", ";
+        }
+        stocklist = stocklist.substring(0,stocklist.length-2);
+        console.log(stockdata);
+        stockseriesdata.push({data: newArray});
         let options = {
           title: {
-        text: response.data[0].name
+        text: stocklist
           },
 
-          series: [
-            {
-              data: newArray
-            }
-          ]
+          series: stockseriesdata
         };
-    const stockdata = options;
+     stockdata = options;
 
 
-    this2.setState({stockdata});
+    this2.setState({stockdata, selectedstocks,stockseriesdata});
         })
   }
 
-  handleChangeStock = (event, value) => {
-    //loop through all the values
-    console.log(event);
-    let parsed_data = JSON.parse(event.data[0].stock_data);
-    let newArray = [];
-    for ( let i=0; i < Object.keys(parsed_data.Date).length; i++){
-      //let temp = { date:parsed_data.Date[i], close:parsed_data.Close[i], high:parsed_data.High[i], volume:parsed_data.Volume[i], open:parsed_data.Open[i], low:parsed_data.Low[i] };
-      let temp = [ parsed_data.Date[i], parsed_data.Open[i]];//, parsed_data.High[i], parsed_data.Low[i], parsed_data.Close[i]];
-      newArray.push(temp);
-    }
-    console.log(event);
-    let options = {
-      title: {
-        text: event.data[0].name
-      },
-
-      series: [
-        {
-          data: newArray
-        }
-      ]
-    };
-   const stockdata = options;
-
-
-    this.setState({stockdata});
-    //this.updateValues();
-  }
+  
   
 
   render() {
     const { classes } = this.props;
     const { amount, period, start, monthlyPayment,
-      monthlyInterest, data, loading, options, stockdata,toptions, stored_stocks, names } = this.state;
+      monthlyInterest, data, loading, options, stockdata, toptions, selectedstocks, stored_stocks, names } = this.state;
     const currentPath = this.props.location.pathname
 
     return (
@@ -407,9 +390,6 @@ class Dashboard extends Component {
                   />
                 )}
               />
-              </div>
-              <MultiSelect names={names} dashChange={this.handleChangeStock}/>
-              <div>
               <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stockdata} />
               </div>
               
