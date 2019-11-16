@@ -30,6 +30,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import IndexContainer from './DOW'
 import { ResponsiveBump } from '@nivo/bump'
 import Topbar from './Topbar';
+import { FixedSizeList } from 'react-window';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 //import Highcharts from 'highcharts/highstock'
 //import StockHighChart from "constants/StockHighChart"
@@ -45,6 +47,19 @@ const numeral = require('numeral');
 numeral.defaultFormat('0,000');
 
 
+function renderRow(props) {
+  const { data, index, style } = props;
+
+  return React.cloneElement(data[index], {
+    style: {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      display: 'block',
+      ...style,
+    },
+  });
+}
 
 const backgroundShape = require('../images/shape.svg');
 
@@ -146,6 +161,35 @@ const Row = ({ index, style }) => (
 
 const monthRange = Months;
 const  toptions1 = { series: [{name: 'Profit', data: [100,200,30,100,30,50,100]},{name: 'Profit2', data: [222,22,1,123,1,312,100]} ]};
+
+const ListboxComponent = React.forwardRef(function ListboxComponent(props, ref) {
+  const { children, ...other } = props;
+  const smUp = useMediaQuery(theme => theme.breakpoints.up('sm'));
+  const itemCount = Array.isArray(children) ? children.length : 0;
+  const itemSize = smUp ? 36 : 48;
+
+  const outerElementType = React.useMemo(() => {
+    return React.forwardRef((props2, ref2) => <div ref={ref2} {...props2} {...other} />);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <div ref={ref}>
+      <FixedSizeList
+        style={{ padding: 0, height: Math.min(8, itemCount) * itemSize, maxHeight: 'auto' }}
+        itemData={children}
+        height={250}
+        width="100%"
+        outerElementType={outerElementType}
+        innerElementType="ul"
+        itemSize={itemSize}
+        overscanCount={5}
+        itemCount={itemCount}
+      >
+        {renderRow}
+      </FixedSizeList>
+    </div>
+  );
+});
 
 class Dashboard extends Component {
 
@@ -494,6 +538,7 @@ class Dashboard extends Component {
     
   };
 
+  
   updateValues() {
     const { amount, period, start } = this.state;
     const monthlyInterest = (amount)*(Math.pow(0.01*(1.01), period))/(Math.pow(0.01, period - 1));
@@ -682,6 +727,7 @@ class Dashboard extends Component {
                 getOptionLabel={option => option.symbol}
                 defaultValue={[]}
                 onChange={this.handleChangeStockList}
+                ListboxComponent={ListboxComponent}
                 renderInput={params => (
                   <TextField
                     {...params}
