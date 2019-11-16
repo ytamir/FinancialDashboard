@@ -32,6 +32,8 @@ import { ResponsiveBump } from '@nivo/bump'
 import Topbar from './Topbar';
 import { FixedSizeList } from 'react-window';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import parse from 'autosuggest-highlight/parse';
+import match from 'autosuggest-highlight/match';
 
 //import Highcharts from 'highcharts/highstock'
 //import StockHighChart from "constants/StockHighChart"
@@ -738,6 +740,20 @@ class Dashboard extends Component {
                     fullWidth
                   />
                 )}
+                renderOption={(option, { inputValue }) => {
+                  const matches = match(option.symbol, inputValue);
+                  const parts = parse(option.symbol, matches);
+          
+                  return (
+                    <div>
+                      {parts.map((part, index) => (
+                        <span key={index} style={{ fontWeight: part.highlight ? 900 : 400 }}>
+                          {part.text}
+                        </span>
+                      ))}
+                    </div>
+                  );
+                }}
               />
               <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stockdata} />
               </div>
