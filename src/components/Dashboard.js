@@ -605,8 +605,8 @@ class Dashboard extends Component {
     const axios = require('axios');
     let {selectedstocks, stockdata, stockseriesdata} = this.state;
     // Make a request for a user with a given ID
-    selectedstocks.push(event.currentTarget.innerHTML);
-    var url = 'http://127.0.0.1:5000/get/daily_price/' + event.currentTarget.innerHTML + '/d/d';
+    selectedstocks.push(event.currentTarget.innerText);
+    var url = 'http://127.0.0.1:5000/get/daily_price/' + event.currentTarget.innerText + '/d/d';
     console.log(url);
     let this2 = this;
     var ret = axios.get(url).then(function (response) {
@@ -628,13 +628,17 @@ class Dashboard extends Component {
         }
         stocklist = stocklist.substring(0,stocklist.length-2);
         console.log(stockdata);
-        stockseriesdata.push({data: newArray});
+        stockseriesdata.push({name:event.currentTarget.innerText, data: newArray});
         let options = {
           title: {
         text: stocklist
           },
-
-          series: stockseriesdata
+          series: stockseriesdata,
+          line: {
+            dataLabels: {
+                enabled: true
+            }
+          }
         };
      stockdata = options;
 
@@ -734,9 +738,8 @@ class Dashboard extends Component {
                   <TextField
                     {...params}
                     variant="outlined"
-                    label="Multiple values"
-                    placeholder="Favorites"
-                    margin="normal"
+                    label="Please Pick Stocks to Compare"
+                    style={{ width: 1000 }}
                     fullWidth
                   />
                 )}
@@ -747,7 +750,7 @@ class Dashboard extends Component {
                   return (
                     <div>
                       {parts.map((part, index) => (
-                        <span key={index} style={{ fontWeight: part.highlight ? 900 : 400 }}>
+                        <span key={index} style={{ fontWeight: part.highlight ? 900 : 300 }}>
                           {part.text}
                         </span>
                       ))}
@@ -755,6 +758,7 @@ class Dashboard extends Component {
                   );
                 }}
               />
+              <div style={{ width: 1000 }}>
               <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stockdata} />
               </div>
               <Box height="40vh" mx={0.5} width="120vh" display="inline-block">
@@ -801,6 +805,7 @@ class Dashboard extends Component {
                       }}
                   />
             </Box>
+            </div>
               
               <Grid item xs={12} md={4}>
                 <Paper className={classes.paper}>
