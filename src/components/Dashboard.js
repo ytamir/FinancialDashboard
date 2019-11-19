@@ -34,6 +34,7 @@ import { FixedSizeList } from 'react-window';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
+import MaterialTable from 'material-table';
 
 //import Highcharts from 'highcharts/highstock'
 //import StockHighChart from "constants/StockHighChart"
@@ -234,6 +235,55 @@ class Dashboard extends Component {
       'TSLA',
       'XOM',
       'DOX'
+    ],
+    columns: [
+      {field: 'url',
+        Title: 'Company',
+        render: rowData => <img src={rowData.url} style={{width: 50, borderRadius: '50%'}}/>
+      },
+      {
+        title: 'Company Name',
+        field: 'CompanyName'
+      },
+      {
+        title: 'Exchange',
+        field: 'Exchange'
+      },
+      {
+        title: 'Range',
+        field: 'Range'
+      },
+      {
+        title: 'Sector',
+        field: 'Sector'
+      },
+      {
+        title: 'Industry',
+        field: 'Industry'
+      },
+      {
+        title: 'CEO',
+        field: 'CEO'
+      },
+      {
+        title: 'Website',
+        field: 'Website',
+        render: rowData => <Link href={rowData.Website} > 
+        {rowData.Website}
+      </Link>
+      }
+
+    ],
+    rowdata: [
+      { 
+      url: "https://financialmodelingprep.com/images-New-jpg/CERN.jpg",
+      CompanyName:  "Cerner Corporation",
+      Exchange: "Nasdaq Global Select",
+      Range: "48.78-67.57",
+      Sector:  "Technology",
+      Industry:"Application Software",
+      CEO: "David Brent Shafer",
+      Website: "http://www.cerner.com"}
     ],
     bumpdata: [
       {
@@ -603,12 +653,14 @@ class Dashboard extends Component {
 
   handleChangeStockList = (event,value) => {
     const axios = require('axios');
-    let {selectedstocks, stockdata, stockseriesdata} = this.state;
+    let {selectedstocks, stockdata, stockseriesdata, columns, rowdata} = this.state;
     // Make a request for a user with a given ID
     selectedstocks.push(event.currentTarget.innerText);
     var url = 'http://127.0.0.1:5000/get/daily_price/' + event.currentTarget.innerText + '/d/d';
+    var profileurl = "https://financialmodelingprep.com/api/v3/company/profile/"  + event.currentTarget.innerText;
     console.log(url);
     let this2 = this;
+    var this3 = this;
     var ret = axios.get(url).then(function (response) {
         // handle success
         console.log(response);
@@ -641,10 +693,37 @@ class Dashboard extends Component {
           }
         };
      stockdata = options;
-
+     console.log("this2");
+     console.log(this2);
 
     this2.setState({stockdata, selectedstocks,stockseriesdata});
+    
         })
+    var ret1 = axios.get(profileurl).then(function (res) {
+      console.log(res);
+      //Image
+
+
+      //columns.push(res.data.profile.companyName);
+      console.log(res.data.profile.companyName);
+      rowdata.push({ 
+        url: res.data.profile.image,
+        CompanyName:  res.data.profile.companyName,
+        Exchange: res.data.profile.exchange,
+        Range: res.data.profile.range,
+        Sector:  res.data.profile.sector,
+        Industry: res.data.profile.industry,
+        CEO: res.data.profile.ceo,
+        tableData:{id: rowdata.length},
+        Website: res.data.profile.website});
+      //rowdata.push(res.data[0]);
+      console.log("rowdata updated");
+      console.log(rowdata);
+      console.log("this3");
+      console.log(this3);
+      this3.setState({rowdata});
+    
+    })
   }
 
   
@@ -653,7 +732,7 @@ class Dashboard extends Component {
   render() {
     const { classes } = this.props;
     const { amount, period, start, monthlyPayment,
-      monthlyInterest, data, loading, options, stockdata, toptions, selectedstocks, stored_stocks, bumpdata, names } = this.state;
+      monthlyInterest, data, loading, options, stockdata, toptions, selectedstocks, stored_stocks, bumpdata, names , rowdata, columns } = this.state;
     const currentPath = this.props.location.pathname
 
     return (
@@ -806,6 +885,11 @@ class Dashboard extends Component {
                   />
             </Box>
             </div>
+            <MaterialTable
+              title="Editable Example"
+              columns={columns}
+              data={rowdata}
+            />
               
               <Grid item xs={12} md={4}>
                 <Paper className={classes.paper}>
