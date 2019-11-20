@@ -162,6 +162,25 @@ const Row = ({ index, style }) => (
   </div>
 );
 
+
+
+
+
+
+
+
+
+//url: "https://financialmodelingprep.com/images-New-jpg/CERN.jpg",
+// CompanyName:  "Cerner Corporation",
+// Exchange: "Nasdaq Global Select",
+// Range: "48.78-67.57",
+// Sector:  "Technology",
+// Industry:"Application Software",
+// CEO: "David Brent Shafer",
+// Website: "http://www.cerner.com"}
+function createData(url, companyName, exchange, range, sector, industry, ceo, website) {
+  return { url, companyName, exchange, range, sector, industry, ceo, website };
+}
 const monthRange = Months;
 const  toptions1 = { series: [{name: 'Profit', data: [100,200,30,100,30,50,100]},{name: 'Profit2', data: [222,22,1,123,1,312,100]} ]};
 
@@ -243,48 +262,48 @@ class Dashboard extends Component {
       },
       {
         title: 'Company Name',
-        field: 'CompanyName'
+        field: 'companyName'
       },
       {
         title: 'Exchange',
-        field: 'Exchange'
+        field: 'exchange'
       },
       {
         title: 'Range',
-        field: 'Range'
+        field: 'range'
       },
       {
         title: 'Sector',
-        field: 'Sector'
+        field: 'sector'
       },
       {
         title: 'Industry',
-        field: 'Industry'
+        field: 'industry'
       },
       {
         title: 'CEO',
-        field: 'CEO'
+        field: 'ceo'
       },
       {
         title: 'Website',
-        field: 'Website',
+        field: 'website',
         render: rowData => <Link href={rowData.Website} > 
         {rowData.Website}
       </Link>
       }
 
     ],
-    rowdata: [
-      { 
-      url: "https://financialmodelingprep.com/images-New-jpg/CERN.jpg",
-      CompanyName:  "Cerner Corporation",
-      Exchange: "Nasdaq Global Select",
-      Range: "48.78-67.57",
-      Sector:  "Technology",
-      Industry:"Application Software",
-      CEO: "David Brent Shafer",
-      Website: "http://www.cerner.com"}
-    ],
+    rowdata: []
+      // { 
+      // url: "https://financialmodelingprep.com/images-New-jpg/CERN.jpg",
+      // CompanyName:  "Cerner Corporation",
+      // Exchange: "Nasdaq Global Select",
+      // Range: "48.78-67.57",
+      // Sector:  "Technology",
+      // Industry:"Application Software",
+      // CEO: "David Brent Shafer",
+      // Website: "http://www.cerner.com"}
+    ,
     bumpdata: [
       {
         "id": "Serie 1",
@@ -651,6 +670,35 @@ class Dashboard extends Component {
     this.updateValues();
   }
 
+  isEquivalent(a, b) {
+    // Create arrays of property names
+    var aProps = Object.getOwnPropertyNames(a);
+    var bProps = Object.getOwnPropertyNames(b);
+
+    // If number of properties is different,
+    // objects are not equivalent
+    if (aProps.length != bProps.length) {
+        return false;
+    }
+
+    for (var i = 0; i < aProps.length; i++) {
+        var propName = aProps[i];
+
+        // If values of same property are not equal,
+        // objects are not equivalent
+        if (a[propName] !== b[propName]) {
+            console.log(propName);
+            console.log(a[propName]);
+            console.log(b[propName]);
+            return false;
+        }
+    }
+
+    // If we made it this far, objects
+    // are considered equivalent
+    return true;
+}
+
   handleChangeStockList = (event,value) => {
     const axios = require('axios');
     let {selectedstocks, stockdata, stockseriesdata, columns, rowdata} = this.state;
@@ -699,31 +747,87 @@ class Dashboard extends Component {
     this2.setState({stockdata, selectedstocks,stockseriesdata});
     
         })
-    var ret1 = axios.get(profileurl).then(function (res) {
-      console.log(res);
+   // var ret1 = axios.get(profileurl).then(function (res) {
+     // console.log(res);
       //Image
 
 
       //columns.push(res.data.profile.companyName);
-      console.log(res.data.profile.companyName);
-      rowdata.push({ 
-        url: res.data.profile.image,
-        CompanyName:  res.data.profile.companyName,
-        Exchange: res.data.profile.exchange,
-        Range: res.data.profile.range,
-        Sector:  res.data.profile.sector,
-        Industry: res.data.profile.industry,
-        CEO: res.data.profile.ceo,
-        tableData:{id: rowdata.length},
-        Website: res.data.profile.website});
-      //rowdata.push(res.data[0]);
-      console.log("rowdata updated");
-      console.log(rowdata);
-      console.log("this3");
-      console.log(this3);
-      this3.setState({rowdata});
+      // console.log(res.data.profile.companyName);
+      // rowdata.push({ 
+      //   url: res.data.profile.image,
+      //   CompanyName:  res.data.profile.companyName,
+      //   Exchange: res.data.profile.exchange,
+      //   Range: res.data.profile.range,
+      //   Sector:  res.data.profile.sector,
+      //   Industry: res.data.profile.industry,
+      //   CEO: res.data.profile.ceo,
+      //   //tableData:{id: rowdata.length},
+      //   Website: res.data.profile.website});
+      // //rowdata.push(res.data[0]);
+      // console.log("rowdata updated");
+      // console.log(rowdata);
+      // console.log("this3");
+      // console.log(this3);
+      // this3.setState({rowdata});
     
-    })
+  //  })
+
+    this.setState( () => {
+      fetch(profileurl)
+        .then(response => response.json())
+        .then(res => {
+
+          //console.log(rowdata2);
+          //let c = this.state.rowdata;
+          // c.push({ 
+          //   url: res.profile.image,
+          //   companyName:  res.profile.companyName,
+          //   exchange: res.profile.exchange,
+          //   range: res.profile.range,
+          //   sector:  res.profile.sector,
+          //   industry: res.profile.industry,
+          //   ceo: res.profile.ceo,
+          //   website: res.profile.website});
+          let a = [];
+          a.push({ //works
+            url: res.profile.image,
+            companyName:  res.profile.companyName,
+            exchange: res.profile.exchange,
+            range: res.profile.range,
+            sector:  res.profile.sector,
+            industry: res.profile.industry,
+            ceo: res.profile.ceo,
+            website: res.profile.website});
+          console.log("should be same");
+          
+          let b = { 
+            url: res.profile.image,
+            companyName:  res.profile.companyName,
+            exchange: res.profile.exchange,
+            range: res.profile.range,
+            sector:  res.profile.sector,
+            industry: res.profile.industry,
+            ceo: res.profile.ceo,
+            website: res.profile.website};
+            console.log("abc");
+            console.log(a);
+            console.log(b);
+           // console.log(c);
+          // if (this.isEquivalent(a[0],b[0]))
+          // {
+          //   console.log("same");
+          // }
+          // else{
+          //   console.log("diff");
+          // }
+          //this.setState(prevState => {
+          this.setState({
+            rowdata: [...this.state.rowdata, b] });
+        
+          });
+        });
+
   }
 
   

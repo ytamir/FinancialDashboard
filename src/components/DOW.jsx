@@ -80,13 +80,13 @@ export default class IndexContainer extends React.Component {
         axios.get(url).then(function (response) {
             // handle success
            
-            console.log(response.data.price);
-            console.log("this.state");
-        console.log(cur.state);
+            //console.log(response.data.price);
+            //console.log("this.state");
+        //console.log(cur.state);
         let old_data = cur.state.chartOptions.series[0].data;
         old_data.push(response.data.price);
     
-        console.log('Our data is fetched');
+        //console.log('Our data is fetched');
         cur.setState({
             chartOptions: {
                 
@@ -126,7 +126,7 @@ export default class IndexContainer extends React.Component {
           })
           .catch(function (error) {
             // handle error
-            console.log(error);
+            //console.log(error);
           })
           .finally(function () {
             // always executed
@@ -146,8 +146,8 @@ export default class IndexContainer extends React.Component {
   timer() {
     //this.setState({ currentCount: 10 });
     var a = this.state;
-    console.log("a");
-    console.log(a);
+    //console.log("a");
+    //console.log(a);
 
     this.setState({
         chartOptions: {
