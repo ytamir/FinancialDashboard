@@ -698,11 +698,15 @@ class Dashboard extends Component {
     // are considered equivalent
     return true;
 }
+handleautodelete = (event,value) => {
+  console.log(event);
+}
 
-  handleChangeStockList = (event,value) => {
-    const axios = require('axios');
-    let {selectedstocks, stockdata, stockseriesdata, columns, rowdata} = this.state;
+handleStockAddition = (event,value) => {
+  const axios = require('axios');
+    let {selectedstocks, stockdata, stockseriesdata} = this.state;
     // Make a request for a user with a given ID
+    var ticker = event.currentTarget.innerText;
     selectedstocks.push(event.currentTarget.innerText);
     var url = 'http://127.0.0.1:5000/get/daily_price/' + event.currentTarget.innerText + '/d/d';
     var profileurl = "https://financialmodelingprep.com/api/v3/company/profile/"  + event.currentTarget.innerText;
@@ -728,7 +732,7 @@ class Dashboard extends Component {
         }
         stocklist = stocklist.substring(0,stocklist.length-2);
         console.log(stockdata);
-        stockseriesdata.push({name:event.currentTarget.innerText, data: newArray});
+        stockseriesdata.push({name:ticker, data: newArray});
         let options = {
           title: {
         text: stocklist
@@ -741,92 +745,116 @@ class Dashboard extends Component {
           }
         };
      stockdata = options;
-     console.log("this2");
-     console.log(this2);
 
     this2.setState({stockdata, selectedstocks,stockseriesdata});
     
         })
-   // var ret1 = axios.get(profileurl).then(function (res) {
-     // console.log(res);
-      //Image
-
-
-      //columns.push(res.data.profile.companyName);
-      // console.log(res.data.profile.companyName);
-      // rowdata.push({ 
-      //   url: res.data.profile.image,
-      //   CompanyName:  res.data.profile.companyName,
-      //   Exchange: res.data.profile.exchange,
-      //   Range: res.data.profile.range,
-      //   Sector:  res.data.profile.sector,
-      //   Industry: res.data.profile.industry,
-      //   CEO: res.data.profile.ceo,
-      //   //tableData:{id: rowdata.length},
-      //   Website: res.data.profile.website});
-      // //rowdata.push(res.data[0]);
-      // console.log("rowdata updated");
-      // console.log(rowdata);
-      // console.log("this3");
-      // console.log(this3);
-      // this3.setState({rowdata});
-    
-  //  })
-
     this.setState( () => {
       fetch(profileurl)
         .then(response => response.json())
         .then(res => {
-
-          //console.log(rowdata2);
-          //let c = this.state.rowdata;
-          // c.push({ 
-          //   url: res.profile.image,
-          //   companyName:  res.profile.companyName,
-          //   exchange: res.profile.exchange,
-          //   range: res.profile.range,
-          //   sector:  res.profile.sector,
-          //   industry: res.profile.industry,
-          //   ceo: res.profile.ceo,
-          //   website: res.profile.website});
-          let a = [];
-          a.push({ //works
-            url: res.profile.image,
-            companyName:  res.profile.companyName,
-            exchange: res.profile.exchange,
-            range: res.profile.range,
-            sector:  res.profile.sector,
-            industry: res.profile.industry,
-            ceo: res.profile.ceo,
-            website: res.profile.website});
-          console.log("should be same");
           
-          let b = { 
-            url: res.profile.image,
-            companyName:  res.profile.companyName,
-            exchange: res.profile.exchange,
-            range: res.profile.range,
-            sector:  res.profile.sector,
-            industry: res.profile.industry,
-            ceo: res.profile.ceo,
-            website: res.profile.website};
-            console.log("abc");
-            console.log(a);
-            console.log(b);
-           // console.log(c);
-          // if (this.isEquivalent(a[0],b[0]))
-          // {
-          //   console.log("same");
-          // }
-          // else{
-          //   console.log("diff");
-          // }
-          //this.setState(prevState => {
           this.setState({
-            rowdata: [...this.state.rowdata, b] });
+            rowdata: [...this.state.rowdata, {
+              symbol: res.symbol, 
+              url: res.profile.image,
+              companyName:  res.profile.companyName,
+              exchange: res.profile.exchange,
+              range: res.profile.range,
+              sector:  res.profile.sector,
+              industry: res.profile.industry,
+              ceo: res.profile.ceo,
+              website: res.profile.website}] });
         
           });
         });
+
+}
+handleStockDeletion= (event,value) => {
+    console.log(event);
+    console.log(value);
+    var newArr = [];
+    var new_selected_stocks = [];
+    let count = 0;
+    var stocklist = "";
+
+    //update title
+    for(var val of value)
+    {
+      stocklist += val.symbol + ", ";
+      new_selected_stocks.push(val.symbol);
+    }
+
+    //update stock series inside of the graph
+    for (var prev_val of this.state.stockseriesdata)
+    {
+      for(var new_symbol of value)
+      {
+        if (prev_val.name  === new_symbol.symbol)
+        {
+          newArr.push(prev_val);
+          break;
+        }
+      }
+       
+    }
+
+    //remove last comma
+    if(stocklist !== "")
+    {
+      stocklist = stocklist.substring(0,stocklist.length-2);
+    }
+    
+    //update graph
+    let options = {
+      title: {
+    text: stocklist
+      },
+      series: newArr,
+      line: {
+        dataLabels: {
+            enabled: true
+        }
+      }
+    };
+
+    //update rowdata
+    var new_rowdata = [];
+    for(var rdata of this.state.rowdata)
+    {
+      for(var new_stock of new_selected_stocks)
+      {
+      
+        if (rdata.symbol !== new_stock)
+        {
+            new_rowdata.push(rdata);
+        }
+      }
+    }
+
+    this.setState({stockdata: options, selectedstocks: new_selected_stocks, stockseriesdata:newArr, rowdata:new_rowdata});
+}
+
+  handleChangeStockList = (event,value) => {
+    console.log(this.state);
+    console.log(this.state.selectedstocks);
+    console.log(this.state.selectedstocks.length);
+    console.log(Object.keys(value).length);
+      if( this.state.selectedstocks.length <  Object.keys(value).length) // new stock is selected
+      {
+        this.handleStockAddition(event, value);
+      }
+      else if (this.state.selectedstocks.length > Object.keys(value).length) // a stock is being deleted
+      {
+        this.handleStockDeletion(event, value);
+
+      }
+      else
+      {
+        console.log("uh oh, spaghettiOs");
+      }
+    
+    
 
   }
 
@@ -912,17 +940,19 @@ class Dashboard extends Component {
               <div style={{ width: 500 }}>
               <Autocomplete
                 multiple
+                filterSelectedOptions
                 options={stored_stocks}
                 getOptionLabel={option => option.symbol}
                 defaultValue={[]}
                 onChange={this.handleChangeStockList}
+                onDelete={this.handleautodelete}
                 ListboxComponent={ListboxComponent}
                 renderInput={params => (
                   <TextField
                     {...params}
                     variant="outlined"
                     label="Please Pick Stocks to Compare"
-                    style={{ width: 1000 }}
+                    style={{ width: 800 }}
                     fullWidth
                   />
                 )}
@@ -990,7 +1020,7 @@ class Dashboard extends Component {
             </Box>
             </div>
             <MaterialTable
-              title="Editable Example"
+              title="Company Data"
               columns={columns}
               data={rowdata}
             />
