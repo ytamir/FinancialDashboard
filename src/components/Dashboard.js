@@ -36,6 +36,10 @@ import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 import MaterialTable from 'material-table';
 
+import metricsjson from './metrics.json';
+
+
+
 //import Highcharts from 'highcharts/highstock'
 //import StockHighChart from "constants/StockHighChart"
 
@@ -228,8 +232,10 @@ class Dashboard extends Component {
     totalPayment: 0,
     stockseriesdata: [],
     selectedstocks: [],
+    selected_metrics: [],
     data: [],
     stored_stocks: JSON.parse(stocksjson),
+    metrics: JSON.parse(metricsjson),
     stockdata: {
       title: {
         text: 'My stock chart'
@@ -305,306 +311,7 @@ class Dashboard extends Component {
       // Website: "http://www.cerner.com"}
     ,
     bumpdata: [
-      {
-        "id": "Serie 1",
-        "data": [
-          {
-            "x": 2000,
-            "y": 10
-          },
-          {
-            "x": 2001,
-            "y": 12
-          },
-          {
-            "x": 2002,
-            "y": 7
-          },
-          {
-            "x": 2003,
-            "y": 4
-          },
-          {
-            "x": 2004,
-            "y": 9
-          }
-        ]
-      },
-      {
-        "id": "Serie 2",
-        "data": [
-          {
-            "x": 2000,
-            "y": 4
-          },
-          {
-            "x": 2001,
-            "y": 5
-          },
-          {
-            "x": 2002,
-            "y": 8
-          },
-          {
-            "x": 2003,
-            "y": 7
-          },
-          {
-            "x": 2004,
-            "y": 7
-          }
-        ]
-      },
-      {
-        "id": "Serie 3",
-        "data": [
-          {
-            "x": 2000,
-            "y": 2
-          },
-          {
-            "x": 2001,
-            "y": 8
-          },
-          {
-            "x": 2002,
-            "y": 1
-          },
-          {
-            "x": 2003,
-            "y": 2
-          },
-          {
-            "x": 2004,
-            "y": 12
-          }
-        ]
-      },
-      {
-        "id": "Serie 4",
-        "data": [
-          {
-            "x": 2000,
-            "y": 12
-          },
-          {
-            "x": 2001,
-            "y": 4
-          },
-          {
-            "x": 2002,
-            "y": 6
-          },
-          {
-            "x": 2003,
-            "y": 5
-          },
-          {
-            "x": 2004,
-            "y": 10
-          }
-        ]
-      },
-      {
-        "id": "Serie 5",
-        "data": [
-          {
-            "x": 2000,
-            "y": 7
-          },
-          {
-            "x": 2001,
-            "y": 7
-          },
-          {
-            "x": 2002,
-            "y": 2
-          },
-          {
-            "x": 2003,
-            "y": 6
-          },
-          {
-            "x": 2004,
-            "y": 1
-          }
-        ]
-      },
-      {
-        "id": "Serie 6",
-        "data": [
-          {
-            "x": 2000,
-            "y": 3
-          },
-          {
-            "x": 2001,
-            "y": 9
-          },
-          {
-            "x": 2002,
-            "y": 11
-          },
-          {
-            "x": 2003,
-            "y": 3
-          },
-          {
-            "x": 2004,
-            "y": 11
-          }
-        ]
-      },
-      {
-        "id": "Serie 7",
-        "data": [
-          {
-            "x": 2000,
-            "y": 9
-          },
-          {
-            "x": 2001,
-            "y": 1
-          },
-          {
-            "x": 2002,
-            "y": 4
-          },
-          {
-            "x": 2003,
-            "y": 9
-          },
-          {
-            "x": 2004,
-            "y": 8
-          }
-        ]
-      },
-      {
-        "id": "Serie 8",
-        "data": [
-          {
-            "x": 2000,
-            "y": 5
-          },
-          {
-            "x": 2001,
-            "y": 10
-          },
-          {
-            "x": 2002,
-            "y": 10
-          },
-          {
-            "x": 2003,
-            "y": 8
-          },
-          {
-            "x": 2004,
-            "y": 4
-          }
-        ]
-      },
-      {
-        "id": "Serie 9",
-        "data": [
-          {
-            "x": 2000,
-            "y": 6
-          },
-          {
-            "x": 2001,
-            "y": 2
-          },
-          {
-            "x": 2002,
-            "y": 3
-          },
-          {
-            "x": 2003,
-            "y": 1
-          },
-          {
-            "x": 2004,
-            "y": 2
-          }
-        ]
-      },
-      {
-        "id": "Serie 10",
-        "data": [
-          {
-            "x": 2000,
-            "y": 1
-          },
-          {
-            "x": 2001,
-            "y": 3
-          },
-          {
-            "x": 2002,
-            "y": 12
-          },
-          {
-            "x": 2003,
-            "y": 12
-          },
-          {
-            "x": 2004,
-            "y": 5
-          }
-        ]
-      },
-      {
-        "id": "Serie 11",
-        "data": [
-          {
-            "x": 2000,
-            "y": 11
-          },
-          {
-            "x": 2001,
-            "y": 11
-          },
-          {
-            "x": 2002,
-            "y": 5
-          },
-          {
-            "x": 2003,
-            "y": 11
-          },
-          {
-            "x": 2004,
-            "y": 3
-          }
-        ]
-      },
-      {
-        "id": "Serie 12",
-        "data": [
-          {
-            "x": 2000,
-            "y": 8
-          },
-          {
-            "x": 2001,
-            "y": 6
-          },
-          {
-            "x": 2002,
-            "y": 9
-          },
-          {
-            "x": 2003,
-            "y": 10
-          },
-          {
-            "x": 2004,
-            "y": 6
-          }
-        ]
-      }
+
     ]
     
   };
@@ -701,7 +408,51 @@ class Dashboard extends Component {
 handleautodelete = (event,value) => {
   console.log(event);
 }
+handleMetricsAddition = (event,value) => {
+  const axios = require('axios');
+  this.state.selected_metrics.push(value[value.length-1]);// add the new metric into the metrics list
+  let current_metric = value[value.length-1];
+  let this2 = this;
+  console.log(this.state.selectedstocks)
+  for (const stock of this.state.selectedstocks)
+  {
+    let url = 'http://127.0.0.1:5000/financial-metrics?stocks=' + stock + '&metrics=' + current_metric + '&frequency=ANNUAL';
+    console.log(url);
+    // eslint-disable-next-line no-loop-func
+    var ret = axios.get(url).then(function (response) {
 
+
+      let parsed_metric_data = response.data.return_data[0];
+      let newArray = [];
+        console.log(parsed_metric_data);
+        for ( let i=0; i < parsed_metric_data.dates.length; i++)
+        {
+          let temp = { x:parsed_metric_data.dates[i], y:parsed_metric_data.data[i]};
+          newArray.push(temp);
+        }
+      let metric_id = parsed_metric_data.ticker +": " +parsed_metric_data.metric;
+      let newobj = { "id": metric_id,"data": newArray};
+      console.log(newobj);
+      let newbumpdata = this2.state.bumpdata;
+      newbumpdata.push(newobj);
+      
+      console.log(newbumpdata);
+      this2.setState({bumpdata:newbumpdata});
+      
+       console.log(newArray);
+
+    });
+
+  }
+
+
+  // let url = 'http://127.0.0.1:5000/financial-metrics?stocks=' + 'stocks'  + '/d/d';
+  // http://127.0.0.1:5000/financial-metrics?stocks=GRMN&metrics=TOTAL%20ASSETS&frequency=QUARTERLY
+  // console.log(value);
+}
+handleMetricsDeletion = (event,value) => {
+  
+}
 handleStockAddition = (event,value) => {
   const axios = require('axios');
     let {selectedstocks, stockdata, stockseriesdata} = this.state;
@@ -835,6 +586,24 @@ handleStockDeletion= (event,value) => {
     this.setState({stockdata: options, selectedstocks: new_selected_stocks, stockseriesdata:newArr, rowdata:new_rowdata});
 }
 
+handleChangeMetricsList = (event,value) => { // onchangefunction for metrics autocomplete
+
+  if( this.state.selected_metrics.length <  Object.keys(value).length) // new metric is selected
+  {
+    this.handleMetricsAddition(event, value);
+  }
+  else if (this.state.selected_metrics.length > Object.keys(value).length) // a metric is being deleted
+  {
+    this.handleMetricsDeletion(event, value);
+
+  }
+  else
+  {
+    console.log("uh oh, spaghettiOs");
+  }
+
+}
+
   handleChangeStockList = (event,value) => {
     console.log(this.state);
     console.log(this.state.selectedstocks);
@@ -864,7 +633,7 @@ handleStockDeletion= (event,value) => {
   render() {
     const { classes } = this.props;
     const { amount, period, start, monthlyPayment,
-      monthlyInterest, data, loading, options, stockdata, toptions, selectedstocks, stored_stocks, bumpdata, names , rowdata, columns } = this.state;
+      monthlyInterest, data, loading, options,metrics, stockdata, toptions, selectedstocks, stored_stocks, bumpdata, names , rowdata, columns } = this.state;
     const currentPath = this.props.location.pathname
 
     return (
@@ -1024,6 +793,39 @@ handleStockDeletion= (event,value) => {
               columns={columns}
               data={rowdata}
             />
+            <Autocomplete
+                multiple
+                filterSelectedOptions
+                options={metrics}
+                getOptionLabel={option => option}
+                defaultValue={[]}
+                onChange={this.handleChangeMetricsList}
+                onDelete={this.handleautodelete}
+                ListboxComponent={ListboxComponent}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    label="Financial Metrics"
+                    style={{ width: 800 }}
+                    fullWidth
+                  />
+                )}
+                renderOption={(option, { inputValue }) => {
+                  const matches = match(option, inputValue);
+                  const parts = parse(option, matches);
+          
+                  return (
+                    <div>
+                      {parts.map((part, index) => (
+                        <span key={index} style={{ fontWeight: part.highlight ? 900 : 300 }}>
+                          {part.text}
+                        </span>
+                      ))}
+                    </div>
+                  );
+                }}
+              />
               
               <Grid item xs={12} md={4}>
                 <Paper className={classes.paper}>
