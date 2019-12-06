@@ -69,30 +69,64 @@ export default class IndexContainer extends React.Component {
   
   getData(){
     
-    setInterval(() => {
+    //setInterval(() => {
         const axios = require('axios');
         //var a = this.state;
         let cur = this;
         
 
-
+        let aplha_url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol='+this.props.indexname+'&interval=5min&outputsize=full&apikey=3GJ8FAC1VNENVM39';
         let url = "https://financialmodelingprep.com/api/v3/majors-indexes/" + this.props.indexname;
-        axios.get(url).then(function (response) {
+        axios.get(aplha_url).then(function (response) {
             // handle success
            
-            //console.log(response.data.price);
-            //console.log("this.state");
+        //console.log(response.data.price);
+        //console.log("this.state");
         //console.log(cur.state);
-        let old_data = cur.state.chartOptions.series[0].data;
-        old_data.push(response.data.price);
+        //let old_data = cur.state.chartOptions.series[0].data;
+        //old_data.push(response.data.price);
+        console.log(response);
+        console.log(response.data["Time Series (5min)"]);
+        var newdata = [];
+        var threshold = 0;
+        var count = 0;
+        for (const item of Object.entries(response.data["Time Series (5min)"]))
+        {
+          if(count === 0)
+          {
+            threshold = parseFloat(item[1]["1. open"]);
+          }
+          console.log(item);
+          newdata.push([Date.parse(item[0]),parseFloat(item[1]["1. open"])]);
+          count++;
+        }
+        newdata.reverse();
+        console.log(newdata);
     
         //console.log('Our data is fetched');
         cur.setState({
             chartOptions: {
-                
-            chart: {
-                height: 200,
-                type: 'area'
+              xAxis: {
+                type: 'datetime'
+            },   
+            area: {
+              fillColor: {
+                  linearGradient: {
+                      x1: 0,
+                      y1: 0,
+                      x2: 0,
+                      y2: 1
+                  },
+                  stops: [
+                      [0, Highcharts.getOptions().colors[0]],
+                      [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                  ]
+              }
+            },
+              states: {
+                hover: {
+                    lineWidth: 1
+                }
             },
             exporting: {
                 buttons: {
@@ -105,22 +139,19 @@ export default class IndexContainer extends React.Component {
                 enabled: false
             },
             series: [{
-                data: old_data,//[0].data.push(Math.random()*3 -1),
-                color: '#FF0000',
-                negativeColor: '#0088FF' ,
-                threshold: 2
+                type: "area",
+                data: newdata,//[0].data.push(Math.random()*3 -1),
+                color: '#42f56c',
+                negativeColor: '#f54251' ,
+                threshold: threshold
             }],
             title: {
                 text: ''
               },
-            xAxis:{
-                visible: false
-            },
             yAxis:{
-                visible: false
-            },
-            title:{
-                visible: false
+              title: {
+                text: 'price'
+            }
             }
             }});
           })
@@ -132,7 +163,7 @@ export default class IndexContainer extends React.Component {
             // always executed
           });
         
-    }, 5000);
+    //}, 5000);
   }
 
   componentDidMount(){

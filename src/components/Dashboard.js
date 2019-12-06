@@ -35,8 +35,11 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 import MaterialTable from 'material-table';
+import XYFrame from "semiotic/lib/XYFrame";
 
 import metricsjson from './metrics.json';
+
+//3GJ8FAC1VNENVM39
 
 
 
@@ -52,6 +55,7 @@ require('highcharts/modules/map')(Highcharts)
 const stocksjson = require('./data.json');
 const numeral = require('numeral');
 numeral.defaultFormat('0,000');
+const theme = ["#ac58e5","#E0488B","#9fd0cb","#e0d33a","#7566ff","#533f82","#7a255d","#365350","#a19a11","#3f4482"];
 
 
 function renderRow(props) {
@@ -311,8 +315,167 @@ class Dashboard extends Component {
       // Website: "http://www.cerner.com"}
     ,
     bumpdata: [
-
-    ]
+      {
+        "id": "Serie 1",
+        "data": [
+          {
+            "x": 2000,
+            "y": 10
+          },
+          {
+            "x": 2001,
+            "y": 12
+          },
+          {
+            "x": 2002,
+            "y": 7
+          },
+          {
+            "x": 2003,
+            "y": 4
+          },
+          {
+            "x": 2004,
+            "y": 9
+          }
+        ]
+      },
+      {
+        "id": "Serie 2",
+        "data": [
+          {
+            "x": 2000,
+            "y": 4
+          },
+          {
+            "x": 2001,
+            "y": 5
+          },
+          {
+            "x": 2002,
+            "y": 8
+          },
+          {
+            "x": 2003,
+            "y": 7
+          },
+          {
+            "x": 2004,
+            "y": 7
+          }
+        ]
+      },
+      {
+        "id": "Serie 3",
+        "data": [
+          {
+            "x": 2000,
+            "y": 2
+          },
+          {
+            "x": 2001,
+            "y": 8
+          },
+          {
+            "x": 2002,
+            "y": 1
+          },
+          {
+            "x": 2003,
+            "y": 2
+          },
+          {
+            "x": 2004,
+            "y": 12
+          }
+        ]
+      },
+      {
+        "id": "Serie 4",
+        "data": [
+          {
+            "x": 2000,
+            "y": 12
+          },
+          {
+            "x": 2001,
+            "y": 4
+          },
+          {
+            "x": 2002,
+            "y": 6
+          },
+          {
+            "x": 2003,
+            "y": 5
+          },
+          {
+            "x": 2004,
+            "y": 10
+          }
+        ]
+      },
+      {
+        "id": "Serie 5",
+        "data": [
+          {
+            "x": 2000,
+            "y": 7
+          },
+          {
+            "x": 2001,
+            "y": 7
+          },
+          {
+            "x": 2002,
+            "y": 2
+          },
+          {
+            "x": 2003,
+            "y": 6
+          },
+          {
+            "x": 2004,
+            "y": 1
+          }
+        ]
+      }
+    ],
+    frameProps: { 
+      /* --- Data --- */
+        lines: [{ title: "Ex Machina", coordinates: [{ week: 1, grossWeekly: 327616, theaterCount: 4, theaterAvg: 81904, date: "2015-04-10", rank: 18 },
+              { week: 2, grossWeekly: 1150814, theaterCount: 39, theaterAvg: 29508, date: "2015-04-17", rank: 15 } ] },
+          { title: "Far from the Madding Crowd", coordinates: [{ week: 1, grossWeekly: 240160, theaterCount: 1, theaterAvg: 24016, date: "2015-05-01", rank: 24 },
+              { week: 2, grossWeekly: 1090487, theaterCount: 99, theaterAvg: 11015, date: "2015-05-08", rank: 15 } ] }],
+      
+      /* --- Size --- */
+        size: [700,200],
+        margin: { left: 80, bottom: 90, right: 10, top: 40 },
+      
+      /* --- Layout --- */
+        lineType: "bumpline",
+      
+      /* --- Process --- */
+        xAccessor: "week",
+        yAccessor: "theaterCount",
+        yExtent: [0],
+      
+      /* --- Customize --- */
+        lineStyle: (d, i) => ({
+          stroke: theme[i],
+          strokeWidth: 2,
+          fill: "none"
+        }),
+        title: (
+          <text textAnchor="middle">
+            Theaters showing <tspan fill={"#ac58e5"}>Ex Machina</tspan> vs{" "}
+            <tspan fill={"#E0488B"}>Far from the Madding Crowd</tspan>
+          </text>
+        ),
+        axes: [{ orient: "left", label: "Rank", tickFormat: function(e){return e}, tickValues: [2,1] },
+          { orient: "bottom", label: { name: "Weeks from Opening Day", locationDistance: 55 } }]
+      }
+    
     
   };
 
@@ -520,6 +683,34 @@ handleStockAddition = (event,value) => {
           });
         });
 
+        // var {bumpdata} = this.state;
+        // var self = this;
+        // var metrics_url = 'http://127.0.0.1:5000/financial-metrics?stocks='+ event.currentTarget.innerText +
+        //           '&metrics=REVENUE&frequency=QUARTERLY';
+     
+        //  var ret = axios.get(metrics_url).then(function (metrics_response) {
+     
+        //      console.log(metrics_response);
+        //      var return_data = metrics_response.data.return_data;
+        //      console.log("RETURN DATA");
+        //      console.log(return_data);
+        //      console.log("ARRAY VALUES");
+     
+        //      for ( var i=0; i < return_data.length; i++ ){
+        //        console.log(return_data[i]);
+        //        bumpdata[i].id = return_data[i].ticker + "-" + return_data[i].metric;
+        //        bumpdata[i].data[0].y = 9000;
+        //      }
+     
+        //      console.log("BUMP DATA");
+        //      console.log(bumpdata);
+        //      self.setState({bumpdata});
+        //      self.forceUpdate();
+        //      console.log("STATE");
+        //      console.log(self.state);
+     
+        //  });
+
 }
 handleStockDeletion= (event,value) => {
     console.log(event);
@@ -678,7 +869,7 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                       <Typography className={classes.title} color="textSecondary" gutterBottom>
                         Nasdaq
                       </Typography>
-                      <IndexContainer indexname = ".IXIC" />
+                      <IndexContainer indexname = "COMP" />
                     </CardContent>
                   </Card>
                   </Grid>
@@ -743,50 +934,6 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
               <div style={{ width: 1000 }}>
               <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stockdata} />
               </div>
-              <Box height="40vh" mx={0.5} width="120vh" display="inline-block">
-                    <ResponsiveBump
-                      data={bumpdata}
-                      margin={{ top: 40, right: 100, bottom: 40, left: 60 }}
-                      xPadding={0.55}
-                      colors={{ scheme: 'spectral' }}
-                      lineWidth={3}
-                      activeLineWidth={6}
-                      inactiveLineWidth={3}
-                      inactiveOpacity={0.15}
-                      pointSize={10}
-                      activePointSize={16}
-                      inactivePointSize={0}
-                      pointColor={{ theme: 'background' }}
-                      pointBorderWidth={3}
-                      activePointBorderWidth={3}
-                      pointBorderColor={{ from: 'serie.color' }}
-                      axisTop={{
-                          tickSize: 5,
-                          tickPadding: 5,
-                          tickRotation: 0,
-                          legend: '',
-                          legendPosition: 'middle',
-                          legendOffset: -36
-                      }}
-                      axisRight={null}
-                      axisBottom={{
-                          tickSize: 5,
-                          tickPadding: 5,
-                          tickRotation: 0,
-                          legend: '',
-                          legendPosition: 'middle',
-                          legendOffset: 32
-                      }}
-                      axisLeft={{
-                          tickSize: 5,
-                          tickPadding: 5,
-                          tickRotation: 0,
-                          legend: 'ranking',
-                          legendPosition: 'middle',
-                          legendOffset: -40
-                      }}
-                  />
-            </Box>
             </div>
             <MaterialTable
               title="Company Data"
@@ -826,6 +973,8 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                   );
                 }}
               />
+
+              <XYFrame {...this.state.frameProps} />
               
               <Grid item xs={12} md={4}>
                 <Paper className={classes.paper}>
