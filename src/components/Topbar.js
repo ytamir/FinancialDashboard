@@ -134,16 +134,13 @@ class Topbar extends Component {
                     <Typography variant="h6" color="inherit" noWrap>
                       <Link to='/' className={classes.link}>
                         <img width={20} src={logo} alt="" />
-                        <span className={classes.tagline}>Material Sense</span>
+                        <span className={classes.tagline}>Financial Analysis Dashboard</span>
                       </Link>
                     </Typography>
                   </div>
                   { !this.props.noTabs && (
                     <React.Fragment>
                       <div className={classes.productLogo}>
-                        <Typography>
-                          A material UI Template
-                        </Typography>
                       </div>
                       <div className={classes.iconContainer}>
                         <IconButton onClick={this.mobileMenuOpen} className={classes.iconButton} color="inherit" aria-label="Menu">

@@ -818,7 +818,11 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
 
   }
 
-  
+//   <div>
+// <Button variant="outlined" className={classes.outlinedButtom}>
+//   Get help
+// </Button>
+// </div>
   
 
   render() {
@@ -832,27 +836,11 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
         <CssBaseline />
         <Topbar currentPath={currentPath} />
         <div className={classes.root}>
-          <Grid container justify="center" >
-            <Grid spacing={24} alignItems="center" justify="center" container className={classes.grid}>
-              <Grid item xs={12}>
-                <div className={classes.topBar}>
-                  <div className={classes.block}>
-                    <Typography variant="h6" gutterBottom>Financial Analysis Dashboard</Typography>
-                    <Typography variant="body1">
-                      Pick the Stocks to Analyze
-                    </Typography>
-                  </div>
-                  <div>
-                    <Button variant="outlined" className={classes.outlinedButtom}>
-                      Get help
-                    </Button>
-                  </div>
-                </div>
-              </Grid>
 
 
-              <Grid container justify="center" >
-                <Grid spacing={3} alignItems="center" justify="center" container className={classes.grid}>
+              <Grid container justify="center" spacing={2}  >
+              <Grid spacing={24} alignItems="center" justify="center" container className={classes.grid}>
+                <Grid xs={11} spacing={3} alignItems="center" justify="center" container className={classes.grid}>
                   <Grid item xs={3}>
                   <Card className={classes.card}>
                     <CardContent>
@@ -869,7 +857,7 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                       <Typography className={classes.title} color="textSecondary" gutterBottom>
                         Nasdaq
                       </Typography>
-                      <IndexContainer indexname = "COMP" />
+                      <IndexContainer indexname = "AAPL" />
                     </CardContent>
                   </Card>
                   </Grid>
@@ -895,9 +883,8 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                   </Grid>
                   
                   </Grid>
-                  </Grid>
-
-              <div style={{ width: 500 }}>
+                  
+              <Grid item xs={11} >
               <Autocomplete
                 multiple
                 filterSelectedOptions
@@ -912,7 +899,6 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                     {...params}
                     variant="outlined"
                     label="Please Pick Stocks to Compare"
-                    style={{ width: 800 }}
                     fullWidth
                   />
                 )}
@@ -931,15 +917,19 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                   );
                 }}
               />
-              <div style={{ width: 1000 }}>
+              </Grid>
+
+              <Grid item xs={11} >
               <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stockdata} />
-              </div>
-            </div>
-            <MaterialTable
+              </Grid>
+              <Grid item xs={11}>
+              <MaterialTable
               title="Company Data"
               columns={columns}
               data={rowdata}
             />
+              </Grid>
+            
             <Autocomplete
                 multiple
                 filterSelectedOptions
@@ -975,294 +965,12 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
               />
 
               <XYFrame {...this.state.frameProps} />
-              
-              <Grid item xs={12} md={4}>
-                <Paper className={classes.paper}>
-                  <div>
-                    <Typography variant="subtitle1" gutterBottom>
-                      How much you want to transfer
-                    </Typography>
-                    <Typography variant="body1">
-                      Use slider to set the amount you need.
-                    </Typography>
-                    <div className={classes.blockCenter}>
-                      <Typography color='secondary' variant="h6" gutterBottom>
-                        {numeral(amount).format()} USD
-                      </Typography>
-                    </div>
-                    <div>
-                      <Slider
-                        value={amount}
-                        min={20000}
-                        max={150000}
-                        step={15000}
-                        onChange={this.handleChangeAmount}
-                      />
-                    </div>
-                    <div className={classes.rangeLabel}>
-                      <div>
-                        <Typography variant="subtitle2">
-                          15,000 USD
-                        </Typography>
-                      </div>
-                      <div>
-                        <Typography variant="subtitle2">
-                          150,000 USD
-                        </Typography>
-                      </div>
-                    </div>
-                  </div>
-                </Paper>
               </Grid>
-              <Grid item xs={12} md={4}>
-                <Paper className={classes.paper}>
-                  <div>
-                    <Typography variant="subtitle1" gutterBottom>
-                      Period
-                    </Typography>
-                    <Typography variant="body1">
-                      A sample period
-                    </Typography>
-                    <div className={classes.blockCenter}>
-                      <Typography color='secondary' variant="h6" gutterBottom>
-                        {period} months
-                      </Typography>
-                    </div>
-                    <div>
-                      <Slider
-                        value={period}
-                        min={1}
-                        max={6}
-                        step={1}
-                        onChange={this.handleChangePeriod}
-                      />
-                    </div>
-                    <div className={classes.rangeLabel}>
-                      <div>
-                        <Typography variant="subtitle2">
-                          1 month
-                        </Typography>
-                      </div>
-                      <div>
-                        <Typography variant="subtitle2">
-                          6 months
-                        </Typography>
-                      </div>
-                    </div>
-                  </div>
-                </Paper>
               </Grid>
-              <Grid item xs={12} md={4}>
-                <Paper className={classes.paper}>
-                  <div>
-                    <Typography variant="subtitle1" gutterBottom>
-                      Start date
-                    </Typography>
-                    <Typography variant="body1">
-                      Set your preferred start date.
-                    </Typography>
-                    <div className={classes.blockCenter}>
-                      <Typography color='secondary' variant="h6" gutterBottom>
-                        {monthRange[start]}
-                      </Typography>
-                    </div>
-                    <div>
-                      <Slider
-                        value={start}
-                        min={0}
-                        max={5}
-                        step={1}
-                        onChange={this.handleChangeStart}
-                      />
-                    </div>
-                    <div className={classes.rangeLabel}>
-                      <div>
-                        <Typography variant="subtitle2">
-                          Dec 2018
-                        </Typography>
-                      </div>
-                      <div>
-                        <Typography variant="subtitle2">
-                          May 2019
-                        </Typography>
-                      </div>
-                    </div>
-                  </div>
-                </Paper>
-              </Grid>
-              <Grid container spacing={4} justify="center">
-                <Grid item xs={12} md={8} >
-                  <Paper className={classes.paper} style={{position: 'relative'}}>
-                    <Loading loading={loading} />
-                    <div className={loading ? classes.loadingState : ''}>
-                      <Typography variant="subtitle1" gutterBottom>
-                        Some details
-                      </Typography>
-                      <Typography variant="body1">
-                        Details about the graph
-                      </Typography>
-                      <div style={{marginTop: 14, marginBottom: 14}}>
-                        <div className={classes.inlining}>
-                          <Avatar className={classes.loanAvatar}></Avatar>
-                          <Typography className={classes.inlining} variant="subtitle2" gutterBottom>
-                            Type
-                          </Typography>
-                          <Typography className={classes.inlining} color='secondary' variant="h6" gutterBottom>
-                            {numeral(monthlyPayment).format()} units
-                          </Typography>
-                        </div>
-                        <div className={classes.inlining}>
-                          <Avatar className={classes.interestAvatar}></Avatar>
-                          <Typography className={classes.inlining} variant="subtitle2" gutterBottom>
-                            Othe type
-                          </Typography>
-                          <Typography className={classes.inlining} color="secondary" variant="h6" gutterBottom>
-                            {numeral(monthlyInterest).format()} units
-                          </Typography>
-                        </div>
-                      </div>
-                      <div >
-                        <SimpleLineChart data={data} />
-                      </div>
-                    </div>
-                  </Paper>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Paper className={classes.paper} style={{position: 'relative'}}>
-                  <Loading loading={loading} />
-                  <div className={loading ? classes.loadingState : ''}>
-                    <Typography variant="subtitle1" gutterBottom>
-                      State
-                    </Typography>
-                    <div className={classes.mainBadge}>
-                      <VerifiedUserIcon style={{fontSize: 72}} fontSize={'large'} color={'secondary'} />
-                      <Typography variant="h5" color={'secondary'} gutterBottom>
-                        Verified
-                      </Typography>
-                    </div>
-                    <div className={classes.buttonBar}>
-                      <Button to={{ pathname: "/dashboard", search: `?type=save` }} component={Link} variant="outlined" className={classes.actionButtom}>
-                        Save
-                      </Button>
-                      <Button to={{ pathname: "/dashboard", search: `?type=apply` }} component={Link} color='primary' variant="contained" className={classes.actionButtom}>
-                        Apply
-                      </Button>
-                    </div>
-                  </div>
-                  </Paper>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
         </div>
       </React.Fragment>
     )
   }
 }
-
-// Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
-const top100Films = [
-  { title: 'The Shawshank Redemption', year: 1994 },
-  { title: 'The Godfather', year: 1972 },
-  { title: 'The Godfather: Part II', year: 1974 },
-  { title: 'The Dark Knight', year: 2008 },
-  { title: '12 Angry Men', year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: 'Pulp Fiction', year: 1994 },
-  { title: 'The Lord of the Rings: The Return of the King', year: 2003 },
-  { title: 'The Good, the Bad and the Ugly', year: 1966 },
-  { title: 'Fight Club', year: 1999 },
-  { title: 'The Lord of the Rings: The Fellowship of the Ring', year: 2001 },
-  { title: 'Star Wars: Episode V - The Empire Strikes Back', year: 1980 },
-  { title: 'Forrest Gump', year: 1994 },
-  { title: 'Inception', year: 2010 },
-  { title: 'The Lord of the Rings: The Two Towers', year: 2002 },
-  { title: "One Flew Over the Cuckoo's Nest", year: 1975 },
-  { title: 'Goodfellas', year: 1990 },
-  { title: 'The Matrix', year: 1999 },
-  { title: 'Seven Samurai', year: 1954 },
-  { title: 'Star Wars: Episode IV - A New Hope', year: 1977 },
-  { title: 'City of God', year: 2002 },
-  { title: 'Se7en', year: 1995 },
-  { title: 'The Silence of the Lambs', year: 1991 },
-  { title: "It's a Wonderful Life", year: 1946 },
-  { title: 'Life Is Beautiful', year: 1997 },
-  { title: 'The Usual Suspects', year: 1995 },
-  { title: 'Léon: The Professional', year: 1994 },
-  { title: 'Spirited Away', year: 2001 },
-  { title: 'Saving Private Ryan', year: 1998 },
-  { title: 'Once Upon a Time in the West', year: 1968 },
-  { title: 'American History X', year: 1998 },
-  { title: 'Interstellar', year: 2014 },
-  { title: 'Casablanca', year: 1942 },
-  { title: 'City Lights', year: 1931 },
-  { title: 'Psycho', year: 1960 },
-  { title: 'The Green Mile', year: 1999 },
-  { title: 'The Intouchables', year: 2011 },
-  { title: 'Modern Times', year: 1936 },
-  { title: 'Raiders of the Lost Ark', year: 1981 },
-  { title: 'Rear Window', year: 1954 },
-  { title: 'The Pianist', year: 2002 },
-  { title: 'The Departed', year: 2006 },
-  { title: 'Terminator 2: Judgment Day', year: 1991 },
-  { title: 'Back to the Future', year: 1985 },
-  { title: 'Whiplash', year: 2014 },
-  { title: 'Gladiator', year: 2000 },
-  { title: 'Memento', year: 2000 },
-  { title: 'The Prestige', year: 2006 },
-  { title: 'The Lion King', year: 1994 },
-  { title: 'Apocalypse Now', year: 1979 },
-  { title: 'Alien', year: 1979 },
-  { title: 'Sunset Boulevard', year: 1950 },
-  { title: 'Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb', year: 1964 },
-  { title: 'The Great Dictator', year: 1940 },
-  { title: 'Cinema Paradiso', year: 1988 },
-  { title: 'The Lives of Others', year: 2006 },
-  { title: 'Grave of the Fireflies', year: 1988 },
-  { title: 'Paths of Glory', year: 1957 },
-  { title: 'Django Unchained', year: 2012 },
-  { title: 'The Shining', year: 1980 },
-  { title: 'WALL·E', year: 2008 },
-  { title: 'American Beauty', year: 1999 },
-  { title: 'The Dark Knight Rises', year: 2012 },
-  { title: 'Princess Mononoke', year: 1997 },
-  { title: 'Aliens', year: 1986 },
-  { title: 'Oldboy', year: 2003 },
-  { title: 'Once Upon a Time in America', year: 1984 },
-  { title: 'Witness for the Prosecution', year: 1957 },
-  { title: 'Das Boot', year: 1981 },
-  { title: 'Citizen Kane', year: 1941 },
-  { title: 'North by Northwest', year: 1959 },
-  { title: 'Vertigo', year: 1958 },
-  { title: 'Star Wars: Episode VI - Return of the Jedi', year: 1983 },
-  { title: 'Reservoir Dogs', year: 1992 },
-  { title: 'Braveheart', year: 1995 },
-  { title: 'M', year: 1931 },
-  { title: 'Requiem for a Dream', year: 2000 },
-  { title: 'Amélie', year: 2001 },
-  { title: 'A Clockwork Orange', year: 1971 },
-  { title: 'Like Stars on Earth', year: 2007 },
-  { title: 'Taxi Driver', year: 1976 },
-  { title: 'Lawrence of Arabia', year: 1962 },
-  { title: 'Double Indemnity', year: 1944 },
-  { title: 'Eternal Sunshine of the Spotless Mind', year: 2004 },
-  { title: 'Amadeus', year: 1984 },
-  { title: 'To Kill a Mockingbird', year: 1962 },
-  { title: 'Toy Story 3', year: 2010 },
-  { title: 'Logan', year: 2017 },
-  { title: 'Full Metal Jacket', year: 1987 },
-  { title: 'Dangal', year: 2016 },
-  { title: 'The Sting', year: 1973 },
-  { title: '2001: A Space Odyssey', year: 1968 },
-  { title: "Singin' in the Rain", year: 1952 },
-  { title: 'Toy Story', year: 1995 },
-  { title: 'Bicycle Thieves', year: 1948 },
-  { title: 'The Kid', year: 1921 },
-  { title: 'Inglourious Basterds', year: 2009 },
-  { title: 'Snatch', year: 2000 },
-  { title: '3 Idiots', year: 2009 },
-  { title: 'Monty Python and the Holy Grail', year: 1975 },
-];
-
 
 export default withRouter(withStyles(styles)(Dashboard));
