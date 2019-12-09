@@ -276,7 +276,8 @@ class Dashboard extends Component {
       },
       {
         title: 'Exchange',
-        field: 'exchange'
+        field: 'exchange',
+        cellStyle: {height: '10px'}
       },
       {
         title: 'Range',
@@ -797,9 +798,11 @@ handleStockDeletion= (event,value) => {
       for(var new_stock of new_selected_stocks)
       {
       
-        if (rdata.symbol !== new_stock)
+        if (rdata.symbol === new_stock)
         {
+            //delete rdata.tableData;
             new_rowdata.push(rdata);
+            break;
         }
       }
     }
@@ -913,8 +916,8 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                   </Grid>
                   
                   </Grid>
-                  
-              <Grid item xs={11} >
+              <Grid xs={11} spacing={3} alignItems="center" justify="center" container className={classes.grid}>    
+              <Grid item xs={6} >
               <Autocomplete
                 multiple
                 filterSelectedOptions
@@ -948,19 +951,8 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                 }}
               />
               </Grid>
-
-              <Grid item xs={11} >
-              <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stockdata} />
-              </Grid>
-              <Grid item xs={11}>
-              <MaterialTable
-              title="Company Data"
-              columns={columns}
-              data={rowdata}
-            />
-              </Grid>
-            
-            <Autocomplete
+              <Grid item xs={6} >
+              <Autocomplete
                 multiple
                 filterSelectedOptions
                 options={metrics}
@@ -974,7 +966,6 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                     {...params}
                     variant="outlined"
                     label="Financial Metrics"
-                    style={{ width: 800 }}
                     fullWidth
                   />
                 )}
@@ -993,6 +984,25 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                   );
                 }}
               />
+              
+              </Grid>
+              </Grid>
+              <Grid xs={11} spacing={3} alignItems="center" justify="center" container className={classes.grid}> 
+              <Grid item xs={6} >
+              <Card className={classes.card}>
+              <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stockdata} />
+              </Card>
+              </Grid>
+              <Grid item xs={6}>
+              <MaterialTable
+              title="Company Data"
+              options={{toolbar: false, padding:'dense', paginationType:'stepped',columnsButton:'false'}}
+              columns={columns}
+              data={rowdata}
+            />
+              </Grid>
+              </Grid>
+            
 
               <XYFrame {...this.state.frameProps} />
               </Grid>
