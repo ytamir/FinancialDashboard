@@ -441,40 +441,52 @@ class Dashboard extends Component {
         ]
       }
     ],
-    frameProps: { 
-      /* --- Data --- */
-        lines: [{ title: "Ex Machina", coordinates: [{ week: 1, grossWeekly: 327616, theaterCount: 4, theaterAvg: 81904, date: "2015-04-10", rank: 18 },
-              { week: 2, grossWeekly: 1150814, theaterCount: 39, theaterAvg: 29508, date: "2015-04-17", rank: 15 } ] },
-          { title: "Far from the Madding Crowd", coordinates: [{ week: 1, grossWeekly: 240160, theaterCount: 1, theaterAvg: 24016, date: "2015-05-01", rank: 24 },
-              { week: 2, grossWeekly: 1090487, theaterCount: 99, theaterAvg: 11015, date: "2015-05-08", rank: 15 } ] }],
-      
-      /* --- Size --- */
-        size: [700,200],
+    frameProps: {
+        lines:
+        [
+
+        { title: "CERNREVENUE",
+          coordinates:
+            [
+                { date: 1, data: 450 },
+                { date: 2, data: 200 },
+                { date: 3, data: 200 },
+                { date: 4, data: 200 },
+                { date: 5, data: 200 }
+            ]
+        },
+
+        { title: "GRMNREVENUE",
+          coordinates:
+            [
+                { date: 1, data: 300 },
+                { date: 2, data: 300 },
+                { date: 3, data: 300 },
+                { date: 4, data: 300 },
+                { date: 5, data: 300 }
+            ]
+        }
+
+        ],
+        size: [600,200],
         margin: { left: 80, bottom: 90, right: 10, top: 40 },
-      
-      /* --- Layout --- */
         lineType: "bumpline",
-      
-      /* --- Process --- */
-        xAccessor: "week",
-        yAccessor: "theaterCount",
-        yExtent: [0],
-      
-      /* --- Customize --- */
+        xAccessor: "date",
+        yAccessor: "data",
         lineStyle: (d, i) => ({
-          stroke: theme[i],
-          strokeWidth: 2,
-          fill: "none"
+            stroke: theme[i],
+            strokeWidth: 2,
+            fill: "none"
         }),
         title: (
-          <text textAnchor="middle">
-            Theaters showing <tspan fill={"#ac58e5"}>Ex Machina</tspan> vs{" "}
-            <tspan fill={"#E0488B"}>Far from the Madding Crowd</tspan>
-          </text>
+            <text textAnchor="middle">
+              Revenue Comparison
+            </text>
         ),
-        axes: [{ orient: "left", label: "Rank", tickFormat: function(e){return e}, tickValues: [2,1] },
-          { orient: "bottom", label: { name: "Weeks from Opening Day", locationDistance: 55 } }]
-      }
+        axes: [{ orient: "left", label: "Rank", },
+               { orient: "bottom", label: "Year" }
+              ]
+    }
     
     
   };
@@ -572,46 +584,64 @@ handleautodelete = (event,value) => {
   console.log(event);
 }
 handleMetricsAddition = (event,value) => {
-  const axios = require('axios');
-  this.state.selected_metrics.push(value[value.length-1]);// add the new metric into the metrics list
+const axios = require('axios');
+  // add the new metric into the metrics list
+  this.state.selected_metrics.push(value[value.length-1]);
   let current_metric = value[value.length-1];
   let this2 = this;
-  console.log(this.state.selectedstocks)
-  for (const stock of this.state.selectedstocks)
-  {
-    let url = 'http://127.0.0.1:5000/financial-metrics?stocks=' + stock + '&metrics=' + current_metric + '&frequency=ANNUAL';
-    console.log(url);
-    // eslint-disable-next-line no-loop-func
+
+    var framePropsArray  = [];
+
+    var stocks = "";
+
+    for ( let i =0; i <  this2.state.selectedstocks.length; i++)
+    {
+        stocks = stocks + this2.state.selectedstocks[i] + ";"
+    }
+    let url = 'http://127.0.0.1:5000/financial-metrics?stocks=' + stocks + '&metrics=' + current_metric + '&frequency=ANNUAL';
+    console.log("URL")
+    console.log(url)
+    console.log(this2.state.selectedstocks)
+
     var ret = axios.get(url).then(function (response) {
 
-
-      let parsed_metric_data = response.data.return_data[0];
-      let newArray = [];
-        console.log(parsed_metric_data);
-        for ( let i=0; i < parsed_metric_data.dates.length; i++)
-        {
-          let temp = { x:parsed_metric_data.dates[i], y:parsed_metric_data.data[i]};
-          newArray.push(temp);
+        var objCopy = {}; // objCopy will store a copy of the frameProps
+        var key;
+        for (key in this2.state.frameProps) {
+        objCopy[key] = this2.state.frameProps[key];
         }
-      let metric_id = parsed_metric_data.ticker +": " +parsed_metric_data.metric;
-      let newobj = { "id": metric_id,"data": newArray};
-      console.log(newobj);
-      let newbumpdata = this2.state.bumpdata;
-      newbumpdata.push(newobj);
-      
-      console.log(newbumpdata);
-      this2.setState({bumpdata:newbumpdata});
-      
-       console.log(newArray);
+        objCopy.lines = []
+
+        for ( let j=0; j < response.data.return_data.length; j++ )
+        {
+            let parsed_metric_data = response.data.return_data[j];
+            let newArray = [];
+            console.log(parsed_metric_data);
+
+            for ( let i=0; i < parsed_metric_data.dates.length; i++)
+            {
+                let split = parsed_metric_data.dates[i].split("-")
+                let year = parseInt(split[0])
+                let month = parseInt(split[1])
+                let day = parseInt(split[2])
+                if(month == 1) { year = year - 1 }
+                year = year - 2000;
+                let temp = { date: year, data: parseInt(parsed_metric_data.data[i]) };
+                newArray.push(temp);
+            }
+
+            console.log("NEWARRAY")
+            console.log(newArray);
+            objCopy.lines.push({title: parsed_metric_data.ticker + parsed_metric_data.metric, coordinates: newArray })
+
+         }
+
+
+        this2.setState({frameProps : objCopy});
+        console.log("STATE")
+        console.log(this2.state)
 
     });
-
-  }
-
-
-  // let url = 'http://127.0.0.1:5000/financial-metrics?stocks=' + 'stocks'  + '/d/d';
-  // http://127.0.0.1:5000/financial-metrics?stocks=GRMN&metrics=TOTAL%20ASSETS&frequency=QUARTERLY
-  // console.log(value);
 }
 handleMetricsDeletion = (event,value) => {
   
