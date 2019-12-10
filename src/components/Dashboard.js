@@ -36,6 +36,10 @@ import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 import MaterialTable from 'material-table';
 import XYFrame from "semiotic/lib/XYFrame";
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Brush,
+  AreaChart, Area,
+} from 'recharts';
 
 import metricsjson from './metrics.json';
 
@@ -170,7 +174,29 @@ const Row = ({ index, style }) => (
   </div>
 );
 
+export  class ListElement extends React.Component {
+  render() {
+    return <li> {this.props.data}</li>
+  }
+};
 
+export  class Syncgraph extends React.Component {
+    render() {
+      if(this.props.data)
+      {
+      console.log(this.props);
+      return <div>
+      <ul>{this.props.data.map(function(element, i){
+        return <ListElement data = {element}/>  })} </ul>
+      </div>
+      }
+      else
+      {
+        return null;
+      }
+    }
+
+};
 
 
 
@@ -315,6 +341,29 @@ class Dashboard extends Component {
       // CEO: "David Brent Shafer",
       // Website: "http://www.cerner.com"}
     ,
+    syncdata:  [
+      {
+        name: 'Page A', uv: 4000, pv: 2400, amt: 2400,
+      },
+      {
+        name: 'Page B', uv: 3000, pv: 1398, amt: 2210,
+      },
+      {
+        name: 'Page C', uv: 2000, pv: 9800, amt: 2290,
+      },
+      {
+        name: 'Page D', uv: 2780, pv: 3908, amt: 2000,
+      },
+      {
+        name: 'Page E', uv: 1890, pv: 4800, amt: 2181,
+      },
+      {
+        name: 'Page F', uv: 2390, pv: 3800, amt: 2500,
+      },
+      {
+        name: 'Page G', uv: 3490, pv: 4300, amt: 2100,
+      },
+    ],
     bumpdata: [
       {
         "id": "Serie 1",
@@ -491,6 +540,7 @@ class Dashboard extends Component {
     
     
   };
+  
 
   
   updateValues() {
@@ -520,6 +570,7 @@ class Dashboard extends Component {
   componentDidMount() {
     this.updateValues();
   }
+
 
   
 
@@ -714,6 +765,10 @@ handleStockAddition = (event,value) => {
           });
         });
 
+
+
+
+
         // var {bumpdata} = this.state;
         // var self = this;
         // var metrics_url = 'http://127.0.0.1:5000/financial-metrics?stocks='+ event.currentTarget.innerText +
@@ -846,9 +901,6 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
       {
         console.log("uh oh, spaghettiOs");
       }
-    
-    
-
   }
 
 //   <div>
@@ -994,20 +1046,71 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
               </Card>
               </Grid>
               <Grid item xs={6}>
+              <div>
+        <h4>A demo of synchronized AreaCharts</h4>
+        <LineChart
+          width={500}
+          height={200}
+          data={this.state.syncdata}
+          syncId="anyId"
+          margin={{
+            top: 10, right: 30, left: 0, bottom: 0,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Line type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
+        </LineChart>
+        <p>Maybe some other content</p>
+        <LineChart
+          width={500}
+          height={200}
+          data={this.state.syncdata}
+          syncId="anyId"
+          margin={{
+            top: 10, right: 30, left: 0, bottom: 0,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Line type="monotone" dataKey="pv" stroke="#82ca9d" fill="#82ca9d" />
+          <Brush />
+        </LineChart>
+        <AreaChart
+          width={500}
+          height={200}
+          data={this.state.syncdata}
+          syncId="anyId"
+          margin={{
+            top: 10, right: 30, left: 0, bottom: 0,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Area type="monotone" dataKey="pv" stroke="#82ca9d" fill="#82ca9d" />
+        </AreaChart>
+      </div>
+             
+              </Grid>
+              </Grid>
               <MaterialTable
               title="Company Data"
               options={{toolbar: false, padding:'dense', paginationType:'stepped',columnsButton:'false'}}
               columns={columns}
               data={rowdata}
             />
-              </Grid>
-              </Grid>
             
 
-              <XYFrame {...this.state.frameProps} />
               </Grid>
               </Grid>
         </div>
+        <Syncgraph name='Fruits' syncdata={this.state.syncdata} data={selectedstocks }/>
       </React.Fragment>
     )
   }
