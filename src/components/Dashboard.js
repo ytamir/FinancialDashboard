@@ -90,7 +90,7 @@ const styles = theme => ({
   },
   grid: {
     width: 1200,
-    margin: `0 ${theme.spacing(2)}px`,
+    margin: `0 ${theme.spacing(0)}px`,
     [theme.breakpoints.down('sm')]: {
       width: 'calc(100% - 20px)'
     }
@@ -99,8 +99,8 @@ const styles = theme => ({
     opacity: 0.05
   },
   paper: {
-    padding: theme.spacing(3),
-    margin: theme.spacing(2),
+    padding: theme.spacing(0),
+    margin: theme.spacing(0),
     textAlign: 'left',
     color: theme.palette.text.secondary
   },
@@ -180,14 +180,31 @@ export  class ListElement extends React.Component {
   }
 };
 
-export  class Syncgraph extends React.Component {
+export  class Syncgraphs extends React.Component {
     render() {
       if(this.props.data)
       {
+      var prevthis = this;
       console.log(this.props);
       return <div>
-      <ul>{this.props.data.map(function(element, i){
-        return <ListElement data = {element}/>  })} </ul>
+      <ul>{
+      this.props.data.map(function(element, i){
+        console.log(element);
+        return <LineChart
+        width={500}
+        height={200}
+        data={prevthis.props.syncdata}
+        syncId="anyId"
+        margin={{
+          top: 10, right: 30, left: 0, bottom: 0,
+        }}
+        >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Line type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
+        </LineChart> })} </ul>      
       </div>
       }
       else
@@ -197,6 +214,55 @@ export  class Syncgraph extends React.Component {
     }
 
 };
+
+/* <LineChart
+width={500}
+height={200}
+data={this.state.syncdata}
+syncId="anyId"
+margin={{
+  top: 10, right: 30, left: 0, bottom: 0,
+}}
+>
+<CartesianGrid strokeDasharray="3 3" />
+<XAxis dataKey="name" />
+<YAxis />
+<Tooltip />
+<Line type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
+</LineChart>
+<p>Maybe some other content</p>
+<LineChart
+width={500}
+height={200}
+data={this.state.syncdata}
+syncId="anyId"
+margin={{
+  top: 10, right: 30, left: 0, bottom: 0,
+}}
+>
+<CartesianGrid strokeDasharray="3 3" />
+<XAxis dataKey="name" />
+<YAxis />
+<Tooltip />
+<Line type="monotone" dataKey="pv" stroke="#82ca9d" fill="#82ca9d" />
+<Brush />
+</LineChart>
+<AreaChart
+width={500}
+height={200}
+data={this.state.syncdata}
+syncId="anyId"
+margin={{
+  top: 10, right: 30, left: 0, bottom: 0,
+}}
+>
+<CartesianGrid strokeDasharray="3 3" />
+<XAxis dataKey="name" />
+<YAxis />
+<Tooltip />
+<Area type="monotone" dataKey="pv" stroke="#82ca9d" fill="#82ca9d" />
+</AreaChart>
+</div> */
 
 
 
@@ -341,6 +407,7 @@ class Dashboard extends Component {
       // CEO: "David Brent Shafer",
       // Website: "http://www.cerner.com"}
     ,
+    metricsData:[],
     syncdata:  [
       {
         name: 'Page A', uv: 4000, pv: 2400, amt: 2400,
@@ -638,7 +705,13 @@ handleautodelete = (event,value) => {
 handleMetricsAddition = (event,value) => {
 const axios = require('axios');
   // add the new metric into the metrics list
-  this.state.selected_metrics.push(value[value.length-1]);
+  console.log(value);
+  let {selected_metrics} = this.state;
+  selected_metrics.push(value[value.length-1]);
+  // var new_metrics_arr = this.state.selected_metrics;
+  // new_metrics_arr
+  this.setState({selected_metrics: selected_metrics});
+
   let current_metric = value[value.length-1];
   let this2 = this;
 
@@ -650,7 +723,7 @@ const axios = require('axios');
     {
         stocks = stocks + this2.state.selectedstocks[i] + ";"
     }
-    let url = 'http://127.0.0.1:5000/financial-metrics?stocks=' + stocks + '&metrics=' + current_metric + '&frequency=ANNUAL';
+    let url = 'http://127.0.0.1:5000/financialy-metrics?stocks=' + stocks + '&metrics=' + current_metric + '&frequency=ANNUAL';
     console.log("URL")
     console.log(url)
     console.log(this2.state.selectedstocks)
@@ -672,13 +745,7 @@ const axios = require('axios');
 
             for ( let i=0; i < parsed_metric_data.dates.length; i++)
             {
-                let split = parsed_metric_data.dates[i].split("-")
-                let year = parseInt(split[0])
-                let month = parseInt(split[1])
-                let day = parseInt(split[2])
-                if(month == 1) { year = year - 1 }
-                year = year - 2000;
-                let temp = { date: year, data: parseInt(parsed_metric_data.data[i]) };
+                let temp = { date: parsed_metric_data.dates[i], data: parseFloat(parsed_metric_data.data[i]) };
                 newArray.push(temp);
             }
 
@@ -696,6 +763,7 @@ const axios = require('axios');
     });
 }
 handleMetricsDeletion = (event,value) => {
+  console.log("lkhdlkasjhflkjashdkfj");
   
 }
 handleStockAddition = (event,value) => {
@@ -983,7 +1051,7 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                   <TextField
                     {...params}
                     variant="outlined"
-                    label="Please Pick Stocks to Compare"
+                    label="Stocks"
                     fullWidth
                   />
                 )}
@@ -1017,7 +1085,7 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                   <TextField
                     {...params}
                     variant="outlined"
-                    label="Financial Metrics"
+                    label="Metrics"
                     fullWidth
                   />
                 )}
@@ -1033,12 +1101,14 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                         </span>
                       ))}
                     </div>
-                  );
-                }}
+                  );}}
+               
               />
               
               </Grid>
+              
               </Grid>
+              
               <Grid xs={11} spacing={3} alignItems="center" justify="center" container className={classes.grid}> 
               <Grid item xs={6} >
               <Card className={classes.card}>
@@ -1110,7 +1180,7 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
               </Grid>
               </Grid>
         </div>
-        <Syncgraph name='Fruits' syncdata={this.state.syncdata} data={selectedstocks }/>
+        <Syncgraphs name='Fruits' syncdata={this.state.syncdata} data={this.state.selected_metrics}/>
       </React.Fragment>
     )
   }
