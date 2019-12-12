@@ -25,9 +25,11 @@ import Box from '@material-ui/core/Box';
 import { sizing } from '@material-ui/system';
 import { FixedSizeList as List } from 'react-window';
 import StockChart from './Stock.jsx'
+import Syncgraphs from './SyncGraphs'
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import IndexContainer from './DOW'
+import LineElement from './LineElement'
 import { ResponsiveBump } from '@nivo/bump'
 import Topbar from './Topbar';
 import { FixedSizeList } from 'react-window';
@@ -174,46 +176,7 @@ const Row = ({ index, style }) => (
   </div>
 );
 
-export  class ListElement extends React.Component {
-  render() {
-    return <li> {this.props.data}</li>
-  }
-};
 
-export  class Syncgraphs extends React.Component {
-    render() {
-      if(this.props.data)
-      {
-      var prevthis = this;
-      console.log(this.props);
-      return <div>
-      <ul>{
-      this.props.data.map(function(element, i){
-        console.log(element);
-        return <LineChart
-        width={500}
-        height={200}
-        data={prevthis.props.syncdata}
-        syncId="anyId"
-        margin={{
-          top: 10, right: 30, left: 0, bottom: 0,
-        }}
-        >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Line type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
-        </LineChart> })} </ul>      
-      </div>
-      }
-      else
-      {
-        return null;
-      }
-    }
-
-};
 
 /* <LineChart
 width={500}
@@ -713,7 +676,7 @@ const axios = require('axios');
   this.setState({selected_metrics: selected_metrics});
 
   let current_metric = value[value.length-1];
-  let this2 = this;
+  var this2 = this;
 
     var framePropsArray  = [];
 
@@ -723,20 +686,32 @@ const axios = require('axios');
     {
         stocks = stocks + this2.state.selectedstocks[i] + ";"
     }
-    let url = 'http://127.0.0.1:5000/financialy-metrics?stocks=' + stocks + '&metrics=' + current_metric + '&frequency=ANNUAL';
+    console.log(this.state.selected_metrics);
+    for(var metric of this.state.selected_metrics)
+    {
+      console.log(metric);
+
+
+    
+    
+    let url = 'http://127.0.0.1:5000/financialy-metrics?stocks=' + stocks + '&metrics=' + metric + '&frequency=ANNUAL';
     console.log("URL")
     console.log(url)
     console.log(this2.state.selectedstocks)
 
+    // eslint-disable-next-line no-loop-func
     var ret = axios.get(url).then(function (response) {
 
-        var objCopy = {}; // objCopy will store a copy of the frameProps
-        var key;
-        for (key in this2.state.frameProps) {
-        objCopy[key] = this2.state.frameProps[key];
-        }
-        objCopy.lines = []
-
+        // var objCopy = {}; // objCopy will store a copy of the frameProps
+        // var key;
+        // for (key in this2.state.frameProps) {
+        // objCopy[key] = this2.state.frameProps[key];
+        // }
+        // objCopy.lines = []
+        
+        
+        // for each stock in returned object
+        console.log(response.data.return_data);
         for ( let j=0; j < response.data.return_data.length; j++ )
         {
             let parsed_metric_data = response.data.return_data[j];
@@ -745,22 +720,60 @@ const axios = require('axios');
 
             for ( let i=0; i < parsed_metric_data.dates.length; i++)
             {
-                let temp = { date: parsed_metric_data.dates[i], data: parseFloat(parsed_metric_data.data[i]) };
+                let temp = { date: parsed_metric_data.dates[i]};
+                temp[parsed_metric_data.ticker+parsed_metric_data.metric] = parseFloat(parsed_metric_data.data[i]);
                 newArray.push(temp);
             }
 
             console.log("NEWARRAY")
             console.log(newArray);
-            objCopy.lines.push({title: parsed_metric_data.ticker + parsed_metric_data.metric, coordinates: newArray })
+            console.log(this2.state.metricsData);
+            if (this2.state.metricsData.length === 0)
+            {
+                this2.setState({'metricsData': newArray});
+                console.log("123");
+            }
+            else
+            {
+              var newmetricdata = [];
+              for (var outside of newArray) // new stock metric combo to add
+              {
+                for( var inside of this2.state.metricsData) // old items
+                {
+                  if ( outside.date === inside.date)
+                  {
+                    for (let [key, value] of Object.entries(outside)) 
+                    {
+                      if (key === 'date' || isNaN(value))
+                      {
+                        //nothing, its already in there or NaN
+                      }
+                      else
+                      {
+                        inside[key] = value;
+                      }
+                    
+                    }
+                    newmetricdata.push(inside);
+                  }
+                }
+              }
+              this2.setState({'metricsData': newmetricdata});
+              console.log("@@@@@@@@@@@@@@");
+              console.log(this2.state.metricsData);
+              console.log(newArray);
+            }
+           // objCopy.lines.push({title: parsed_metric_data.ticker + parsed_metric_data.metric, coordinates: newArray })
 
          }
 
 
-        this2.setState({frameProps : objCopy});
+        //qthis2.setState({frameProps : objCopy});
         console.log("STATE")
         console.log(this2.state)
 
     });
+  }
 }
 handleMetricsDeletion = (event,value) => {
   console.log("lkhdlkasjhflkjashdkfj");
@@ -1180,7 +1193,7 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
               </Grid>
               </Grid>
         </div>
-        <Syncgraphs name='Fruits' syncdata={this.state.syncdata} data={this.state.selected_metrics}/>
+        <Syncgraphs name='Fruits' metricsData={this.state.metricsData} metrics={this.state.selected_metrics} stocks={this.state.selectedstocks}/>
       </React.Fragment>
     )
   }

@@ -85,8 +85,8 @@ export default class IndexContainer extends React.Component {
         //console.log(cur.state);
         //let old_data = cur.state.chartOptions.series[0].data;
         //old_data.push(response.data.price);
-        console.log(response);
-        console.log(response.data["Time Series (5min)"]);
+        //console.log(response);
+        //console.log(response.data["Time Series (5min)"]);
         var newdata = [];
         var threshold = 0;
         var count = 0;
@@ -96,12 +96,12 @@ export default class IndexContainer extends React.Component {
           {
             threshold = parseFloat(item[1]["1. open"]);
           }
-          console.log(item);
+         // console.log(item);
           newdata.push([Date.parse(item[0]),parseFloat(item[1]["1. open"])]);
           count++;
         }
         newdata.reverse();
-        console.log(newdata);
+        //console.log(newdata);
     
         //console.log('Our data is fetched');
         cur.setState({
