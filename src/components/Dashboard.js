@@ -85,7 +85,6 @@ const styles = theme => ({
     flexGrow: 1,
     backgroundColor: theme.palette.grey['100'],
     overflow: 'hidden',
-    background: `url(${backgroundShape}) no-repeat`,
     backgroundSize: 'cover',
     backgroundPosition: '0 400px',
     paddingBottom: 200
@@ -293,6 +292,7 @@ class Dashboard extends Component {
     selectedstocks: [],
     selected_metrics: [],
     data: [],
+    graphcolors: ['#1EB980','#FF6859','#B15DFF','#72DEFF','#045D56'],
     stored_stocks: JSON.parse(stocksjson),
     metrics: JSON.parse(metricsjson),
     stockdata: {
@@ -717,10 +717,10 @@ const axios = require('axios');
             let parsed_metric_data = response.data.return_data[j];
             let newArray = [];
             console.log(parsed_metric_data);
-
-            for ( let i=0; i < parsed_metric_data.dates.length; i++)
+            var firstyear = parseInt(parsed_metric_data.dates[0].split("-")[0]);
+            for ( let i= parsed_metric_data.dates.length-1; i >= 0; i--)
             {
-                let temp = { date: parsed_metric_data.dates[i]};
+                let temp = { date: parseInt(firstyear-i)};
                 temp[parsed_metric_data.ticker+parsed_metric_data.metric] = parseFloat(parsed_metric_data.data[i]);
                 newArray.push(temp);
             }
@@ -735,26 +735,42 @@ const axios = require('axios');
             }
             else
             {
+              var olddata = this2.state.metricsData;
               var newmetricdata = [];
-              for (var outside of newArray) // new stock metric combo to add
+              for (var newval of newArray) // new stock metric combo to add
               {
-                for( var inside of this2.state.metricsData) // old items
+                for( var oldval of olddata) // old items
                 {
-                  if ( outside.date === inside.date)
+                  console.log("newval:  ");
+                  console.log(newval);
+                  console.log("oldval:  ");
+                  console.log(oldval);
+                  if ( newval.date === oldval.date)
                   {
-                    for (let [key, value] of Object.entries(outside)) 
+                    for (let [key, value] of Object.entries(newval)) 
                     {
-                      if (key === 'date' || isNaN(value))
+                      if (key === 'date'  )
                       {
                         //nothing, its already in there or NaN
                       }
+                      else 
+                      {
+                      if (isNaN(value)) 
+                      {
+                        newmetricdata.push(oldval);
+                        break;
+                      }
                       else
                       {
-                        inside[key] = value;
+                        oldval[key] = value;
+                        newmetricdata.push(oldval);
+                        break;
                       }
-                    
                     }
-                    newmetricdata.push(inside);
+                      
+                    //break;
+                    }
+                    
                   }
                 }
               }
@@ -1129,56 +1145,8 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
               </Card>
               </Grid>
               <Grid item xs={6}>
-              <div>
-        <h4>A demo of synchronized AreaCharts</h4>
-        <LineChart
-          width={500}
-          height={200}
-          data={this.state.syncdata}
-          syncId="anyId"
-          margin={{
-            top: 10, right: 30, left: 0, bottom: 0,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Line type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
-        </LineChart>
-        <p>Maybe some other content</p>
-        <LineChart
-          width={500}
-          height={200}
-          data={this.state.syncdata}
-          syncId="anyId"
-          margin={{
-            top: 10, right: 30, left: 0, bottom: 0,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Line type="monotone" dataKey="pv" stroke="#82ca9d" fill="#82ca9d" />
-          <Brush />
-        </LineChart>
-        <AreaChart
-          width={500}
-          height={200}
-          data={this.state.syncdata}
-          syncId="anyId"
-          margin={{
-            top: 10, right: 30, left: 0, bottom: 0,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Area type="monotone" dataKey="pv" stroke="#82ca9d" fill="#82ca9d" />
-        </AreaChart>
-      </div>
+              <Syncgraphs name='Fruits' graphcolors={this.state.graphcolors} metricsData={this.state.metricsData} metrics={this.state.selected_metrics} stocks={this.state.selectedstocks}/>
+      
              
               </Grid>
               </Grid>
@@ -1193,8 +1161,7 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
               </Grid>
               </Grid>
         </div>
-        <Syncgraphs name='Fruits' metricsData={this.state.metricsData} metrics={this.state.selected_metrics} stocks={this.state.selectedstocks}/>
-      </React.Fragment>
+        </React.Fragment>
     )
   }
 }
