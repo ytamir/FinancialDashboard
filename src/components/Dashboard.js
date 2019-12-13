@@ -90,7 +90,7 @@ const styles = theme => ({
     paddingBottom: 200
   },
   grid: {
-    width: 1200,
+    width: 1400,
     margin: `0 ${theme.spacing(0)}px`,
     [theme.breakpoints.down('sm')]: {
       width: 'calc(100% - 20px)'
@@ -296,6 +296,9 @@ class Dashboard extends Component {
     stored_stocks: JSON.parse(stocksjson),
     metrics: JSON.parse(metricsjson),
     stockdata: {
+      chart: {
+        backgroundColor: null,
+      },
       title: {
         text: 'My stock chart'
       },
@@ -571,7 +574,121 @@ class Dashboard extends Component {
     
   };
   
+  updatemetricsgraphs() {
+    var stocks = "";
+    const axios = require('axios');
+    var this2 = this;
 
+    for ( let i =0; i <  this2.state.selectedstocks.length; i++)
+    {
+        stocks = stocks + this2.state.selectedstocks[i] + ";"
+    }
+    console.log(this.state.selected_metrics);
+    for(var metric of this.state.selected_metrics)
+    {
+      console.log(metric);
+
+
+    
+    
+    let url = 'http://127.0.0.1:5000/financialy-metrics?stocks=' + stocks + '&metrics=' + metric + '&frequency=ANNUAL';
+    console.log("URL")
+    console.log(url)
+    
+    console.log(this2.state.selectedstocks)
+
+    // eslint-disable-next-line no-loop-func
+    var ret = axios.get(url).then(function (response) {
+
+        // var objCopy = {}; // objCopy will store a copy of the frameProps
+        // var key;
+        // for (key in this2.state.frameProps) {
+        // objCopy[key] = this2.state.frameProps[key];
+        // }
+        // objCopy.lines = []
+        
+        
+        // for each stock in returned object
+        console.log(response.data.return_data);
+        for ( let j=0; j < response.data.return_data.length; j++ )
+        {
+            let parsed_metric_data = response.data.return_data[j];
+            let newArray = [];
+            console.log(parsed_metric_data);
+            var firstyear = parseInt(parsed_metric_data.dates[0].split("-")[0]);
+            for ( let i= parsed_metric_data.dates.length-1; i >= 0; i--)
+            {
+                let temp = { date: parseInt(firstyear-i)};
+                temp[parsed_metric_data.ticker+parsed_metric_data.metric] = parseFloat(parsed_metric_data.data[i]);
+                newArray.push(temp);
+            }
+
+            console.log("NEWARRAY")
+            console.log(newArray);
+            console.log(this2.state.metricsData);
+            if (this2.state.metricsData.length === 0)
+            {
+                this2.setState({'metricsData': newArray});
+                console.log("123");
+            }
+            else
+            {
+              var olddata = this2.state.metricsData;
+              var newmetricdata = [];
+              for (var newval of newArray) // new stock metric combo to add
+              {
+                for( var oldval of olddata) // old items
+                {
+                  console.log("newval:  ");
+                  console.log(newval);
+                  console.log("oldval:  ");
+                  console.log(oldval);
+                  if ( newval.date === oldval.date)
+                  {
+                    for (let [key, value] of Object.entries(newval)) 
+                    {
+                      if (key === 'date'  )
+                      {
+                        //nothing, its already in there or NaN
+                      }
+                      else 
+                      {
+                      if (isNaN(value)) 
+                      {
+                        newmetricdata.push(oldval);
+                        break;
+                      }
+                      else
+                      {
+                        oldval[key] = value;
+                        newmetricdata.push(oldval);
+                        break;
+                      }
+                    }
+                      
+                    //break;
+                    }
+                    
+                  }
+                }
+              }
+              this2.setState({'metricsData': newmetricdata});
+              console.log("@@@@@@@@@@@@@@");
+              console.log(this2.state.metricsData);
+              console.log(newArray);
+            }
+           // objCopy.lines.push({title: parsed_metric_data.ticker + parsed_metric_data.metric, coordinates: newArray })
+
+         }
+
+
+        //qthis2.setState({frameProps : objCopy});
+        console.log("STATE")
+        console.log(this2.state)
+
+    });
+  }
+  }
   
   updateValues() {
     const { amount, period, start } = this.state;
@@ -679,117 +796,7 @@ const axios = require('axios');
   var this2 = this;
 
     var framePropsArray  = [];
-
-    var stocks = "";
-
-    for ( let i =0; i <  this2.state.selectedstocks.length; i++)
-    {
-        stocks = stocks + this2.state.selectedstocks[i] + ";"
-    }
-    console.log(this.state.selected_metrics);
-    for(var metric of this.state.selected_metrics)
-    {
-      console.log(metric);
-
-
-    
-    
-    let url = 'http://127.0.0.1:5000/financialy-metrics?stocks=' + stocks + '&metrics=' + metric + '&frequency=ANNUAL';
-    console.log("URL")
-    console.log(url)
-    console.log(this2.state.selectedstocks)
-
-    // eslint-disable-next-line no-loop-func
-    var ret = axios.get(url).then(function (response) {
-
-        // var objCopy = {}; // objCopy will store a copy of the frameProps
-        // var key;
-        // for (key in this2.state.frameProps) {
-        // objCopy[key] = this2.state.frameProps[key];
-        // }
-        // objCopy.lines = []
-        
-        
-        // for each stock in returned object
-        console.log(response.data.return_data);
-        for ( let j=0; j < response.data.return_data.length; j++ )
-        {
-            let parsed_metric_data = response.data.return_data[j];
-            let newArray = [];
-            console.log(parsed_metric_data);
-            var firstyear = parseInt(parsed_metric_data.dates[0].split("-")[0]);
-            for ( let i= parsed_metric_data.dates.length-1; i >= 0; i--)
-            {
-                let temp = { date: parseInt(firstyear-i)};
-                temp[parsed_metric_data.ticker+parsed_metric_data.metric] = parseFloat(parsed_metric_data.data[i]);
-                newArray.push(temp);
-            }
-
-            console.log("NEWARRAY")
-            console.log(newArray);
-            console.log(this2.state.metricsData);
-            if (this2.state.metricsData.length === 0)
-            {
-                this2.setState({'metricsData': newArray});
-                console.log("123");
-            }
-            else
-            {
-              var olddata = this2.state.metricsData;
-              var newmetricdata = [];
-              for (var newval of newArray) // new stock metric combo to add
-              {
-                for( var oldval of olddata) // old items
-                {
-                  console.log("newval:  ");
-                  console.log(newval);
-                  console.log("oldval:  ");
-                  console.log(oldval);
-                  if ( newval.date === oldval.date)
-                  {
-                    for (let [key, value] of Object.entries(newval)) 
-                    {
-                      if (key === 'date'  )
-                      {
-                        //nothing, its already in there or NaN
-                      }
-                      else 
-                      {
-                      if (isNaN(value)) 
-                      {
-                        newmetricdata.push(oldval);
-                        break;
-                      }
-                      else
-                      {
-                        oldval[key] = value;
-                        newmetricdata.push(oldval);
-                        break;
-                      }
-                    }
-                      
-                    //break;
-                    }
-                    
-                  }
-                }
-              }
-              this2.setState({'metricsData': newmetricdata});
-              console.log("@@@@@@@@@@@@@@");
-              console.log(this2.state.metricsData);
-              console.log(newArray);
-            }
-           // objCopy.lines.push({title: parsed_metric_data.ticker + parsed_metric_data.metric, coordinates: newArray })
-
-         }
-
-
-        //qthis2.setState({frameProps : objCopy});
-        console.log("STATE")
-        console.log(this2.state)
-
-    });
-  }
+    this.updatemetricsgraphs();
 }
 handleMetricsDeletion = (event,value) => {
   console.log("lkhdlkasjhflkjashdkfj");
@@ -830,6 +837,7 @@ handleStockAddition = (event,value) => {
           title: {
         text: stocklist
           },
+          
           series: stockseriesdata,
           line: {
             dataLabels: {
@@ -861,7 +869,7 @@ handleStockAddition = (event,value) => {
         
           });
         });
-
+      this.updatemetricsgraphs();
 
 
 
