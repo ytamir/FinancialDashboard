@@ -87,7 +87,7 @@ export default  class Syncgraphs extends React.Component {
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="date" />
         <Legend/>
-        <YAxis tickFormatter={tick => {
+        <YAxis scale="sqrt" tickFormatter={tick => {
               return nFormatter(tick, 3); }}/>
         <Tooltip formatter={value => {
               return formatMoney(value); }}/>
