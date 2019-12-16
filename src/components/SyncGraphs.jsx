@@ -1,6 +1,6 @@
 
 import {
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Brush,
+    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,ReferenceLine, Brush,
     AreaChart, Area,
   } from 'recharts';
 import React,  { Component } from 'react';
@@ -27,18 +27,13 @@ function nFormatter(num, digits) {
 
 function formatMoney(amount, decimalCount = 0, decimal = ".", thousands = ",") {
   try {
-    console.log("amount");
-    console.log(amount);
     if( amount > 10000)
     {
-       decimalCount = Math.abs(decimalCount);
+    decimalCount = Math.abs(decimalCount);
     decimalCount = isNaN(decimalCount) ? 2 : decimalCount;
-
     const negativeSign = amount < 0 ? "-" : "";
-
     let i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount)).toString();
     let j = (i.length > 3) ? i.length % 3 : 0;
-
     return negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands) + (decimalCount ? decimal + Math.abs(amount - i).toFixed(decimalCount).slice(2) : "");
     }
     else
@@ -65,16 +60,11 @@ export default  class Syncgraphs extends React.Component {
       {
       var prevthis = this;
       let countcolor = -1;
-      console.log(this.props);
       return <div>
       <ul>{
         
-      this.props.metrics.map(function(element, i){
-       
-        console.log(element);
-        console.log(this);
-        console.log(prevthis);
-        countcolor = -1;
+      this.props.metrics.map(function(element, i){ // for every selected metric
+        countcolor = 0;
         return <React.Fragment> <h4>{element}</h4>  <LineChart
         width={500}
         height={200}
@@ -84,6 +74,7 @@ export default  class Syncgraphs extends React.Component {
           top: 10, right: 30, left: 0, bottom: 0,
         }}
         >
+
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="date" />
         <Legend/>
@@ -91,21 +82,17 @@ export default  class Syncgraphs extends React.Component {
               return nFormatter(tick, 3); }}/>
         <Tooltip formatter={value => {
               return formatMoney(value); }}/>
+        <ReferenceLine y={0} stroke='#000'/>
         {
-            prevthis.props.stocks.map((id) => { // use element and id to get the name of stock metric combo
+            prevthis.props.stocks.map((id) => { //for every selected stock
               countcolor++; // basis' | 'basisClosed' | 'basisOpen' | 'linear' | 'linearClosed' | 'natural' | 'monotoneX' | 'monotoneY' | 'monotone' | 'step' | 'stepBefore' | 'stepAfter'
-              console.log(countcolor);  
-            return ( <Line type="linear" dataKey={id+element} stroke={prevthis.props.graphcolors[countcolor]} strokeWidth={2} />)  
-            
+              // use element and id to get the name of stock metric combo
+            return ( <Line type="monotoneX" dataKey={id+" "+element} stroke={prevthis.props.graphcolors[countcolor-1]} strokeWidth={2} />)  
             })
-            
         }
-        
         </LineChart> </React.Fragment> })} </ul>      
         </div>
-        
       }
-
       else
       {
         return null;

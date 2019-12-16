@@ -280,19 +280,11 @@ class Dashboard extends Component {
 
   
   state = {
-    loading: true,
-    amount: 15000,
-    period: 3,
-    start: 0,
-    monthlyInterest: 0,
-    totalInterest: 0,
-    monthlyPayment: 0,
-    totalPayment: 0,
     stockseriesdata: [],
     selectedstocks: [],
     selected_metrics: [],
     data: [],
-    graphcolors: ['#1EB980','#FF6859','#B15DFF','#72DEFF','#045D56'],
+    graphcolors: ["#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"],//['#1EB980','#FF6859','#B15DFF','#72DEFF','#045D56'],
     stored_stocks: JSON.parse(stocksjson),
     metrics: JSON.parse(metricsjson),
     stockdata: {chart:
@@ -305,19 +297,7 @@ class Dashboard extends Component {
       },
       credits: false
     },
-      testdata: [[1220832000000, 22.56], [1220918400000, 21.67], [1221004800000, 21.66], [1221091200000, 21.81], [1221177600000, 21.28], [1221436800000, 20.05], [1221523200000, 19.98], [1221609600000, 18.26], [1221696000000, 19.16], [1221782400000, 20.13], [1222041600000, 18.72], [1222128000000, 18.12], [1222214400000, 18.39], [1222300800000, 18.85], [1222387200000, 18.32], [1222646400000, 15.04], [1222732800000, 16.24], [1222819200000, 15.59], [1222905600000, 14.3], [1222992000000, 13.87], [1223251200000, 14.02], [1223337600000, 12.74], [1223424000000, 12.83], [1223510400000, 12.68], [1223596800000, 13.8], [1223856000000, 15.75], [1223942400000, 14.87], [1224028800000, 13.99], [1224115200000, 14.56], [1224201600000, 13.91], [1224460800000, 14.06], [1224547200000, 13.07], [1224633600000, 13.84], [1224720000000, 14.03], [1224806400000, 13.77], [1225065600000, 13.16], [1225152000000, 14.27], [1225238400000, 14.94], [1225324800000, 15.86], [1225411200000, 15.37], [1225670400000, 15.28], [1225756800000, 15.86], [1225843200000, 14.76], [1225929600000, 14.16], [1226016000000, 14.03], [1226275200000, 13.7], [1226361600000, 13.54], [1226448000000, 12.87], [1226534400000, 13.78], [1226620800000, 12.89], [1226880000000, 12.59], [1226966400000, 12.84], [1227052800000, 12.33], [1227139200000, 11.5], [1227225600000, 11.8], [1227484800000, 13.28], [1227571200000, 12.97], [1227657600000, 13.57], [1227830400000, 13.24], [1228089600000, 12.7], [1228176000000, 13.21], [1228262400000, 13.7], [1228348800000, 13.06], [1228435200000, 13.43], [1228694400000, 14.25], [1228780800000, 14.29], [1228867200000, 14.03], [1228953600000, 13.57], [1229040000000, 14.04], [1229299200000, 13.54]],
-      toptions: { series: [{name: 'Profit', data: [100,200,30,100,30,50,100]}]},     
-    names: [
-      'AAPL',
-      'MSFT',
-      'GRMN',
-      'CERN',
-      'FB',
-      'TSLA',
-      'XOM',
-      'DOX'
-    ],
-    columns: [
+     columns: [
       {field: 'url',
         Title: 'Company',
         render: rowData => <img src={rowData.url} style={{width: 50, borderRadius: '50%'}}/>
@@ -367,209 +347,13 @@ class Dashboard extends Component {
       // CEO: "David Brent Shafer",
       // Website: "http://www.cerner.com"}
     ,
-    metricsData:[],
-    syncdata:  [
-      {
-        name: 'Page A', uv: 4000, pv: 2400, amt: 2400,
-      },
-      {
-        name: 'Page B', uv: 3000, pv: 1398, amt: 2210,
-      },
-      {
-        name: 'Page C', uv: 2000, pv: 9800, amt: 2290,
-      },
-      {
-        name: 'Page D', uv: 2780, pv: 3908, amt: 2000,
-      },
-      {
-        name: 'Page E', uv: 1890, pv: 4800, amt: 2181,
-      },
-      {
-        name: 'Page F', uv: 2390, pv: 3800, amt: 2500,
-      },
-      {
-        name: 'Page G', uv: 3490, pv: 4300, amt: 2100,
-      },
-    ],
-    bumpdata: [
-      {
-        "id": "Serie 1",
-        "data": [
-          {
-            "x": 2000,
-            "y": 10
-          },
-          {
-            "x": 2001,
-            "y": 12
-          },
-          {
-            "x": 2002,
-            "y": 7
-          },
-          {
-            "x": 2003,
-            "y": 4
-          },
-          {
-            "x": 2004,
-            "y": 9
-          }
-        ]
-      },
-      {
-        "id": "Serie 2",
-        "data": [
-          {
-            "x": 2000,
-            "y": 4
-          },
-          {
-            "x": 2001,
-            "y": 5
-          },
-          {
-            "x": 2002,
-            "y": 8
-          },
-          {
-            "x": 2003,
-            "y": 7
-          },
-          {
-            "x": 2004,
-            "y": 7
-          }
-        ]
-      },
-      {
-        "id": "Serie 3",
-        "data": [
-          {
-            "x": 2000,
-            "y": 2
-          },
-          {
-            "x": 2001,
-            "y": 8
-          },
-          {
-            "x": 2002,
-            "y": 1
-          },
-          {
-            "x": 2003,
-            "y": 2
-          },
-          {
-            "x": 2004,
-            "y": 12
-          }
-        ]
-      },
-      {
-        "id": "Serie 4",
-        "data": [
-          {
-            "x": 2000,
-            "y": 12
-          },
-          {
-            "x": 2001,
-            "y": 4
-          },
-          {
-            "x": 2002,
-            "y": 6
-          },
-          {
-            "x": 2003,
-            "y": 5
-          },
-          {
-            "x": 2004,
-            "y": 10
-          }
-        ]
-      },
-      {
-        "id": "Serie 5",
-        "data": [
-          {
-            "x": 2000,
-            "y": 7
-          },
-          {
-            "x": 2001,
-            "y": 7
-          },
-          {
-            "x": 2002,
-            "y": 2
-          },
-          {
-            "x": 2003,
-            "y": 6
-          },
-          {
-            "x": 2004,
-            "y": 1
-          }
-        ]
-      }
-    ],
-    frameProps: {
-        lines:
-        [
-
-        { title: "CERNREVENUE",
-          coordinates:
-            [
-                { date: 1, data: 450 },
-                { date: 2, data: 200 },
-                { date: 3, data: 200 },
-                { date: 4, data: 200 },
-                { date: 5, data: 200 }
-            ]
-        },
-
-        { title: "GRMNREVENUE",
-          coordinates:
-            [
-                { date: 1, data: 300 },
-                { date: 2, data: 300 },
-                { date: 3, data: 300 },
-                { date: 4, data: 300 },
-                { date: 5, data: 300 }
-            ]
-        }
-
-        ],
-        size: [600,200],
-        margin: { left: 80, bottom: 90, right: 10, top: 40 },
-        lineType: "bumpline",
-        xAccessor: "date",
-        yAccessor: "data",
-        lineStyle: (d, i) => ({
-            stroke: theme[i],
-            strokeWidth: 2,
-            fill: "none"
-        }),
-        title: (
-            <text textAnchor="middle">
-              Revenue Comparison
-            </text>
-        ),
-        axes: [{ orient: "left", label: "Rank", },
-               { orient: "bottom", label: "Year" }
-              ]
-    }
-    
+    metricsData:[]
     
   };
   
   updatemetricsgraphs() {
     var stocks = "";
+    var metrics = "";
     const axios = require('axios');
     var this2 = this;
 
@@ -577,48 +361,33 @@ class Dashboard extends Component {
     {
         stocks = stocks + this2.state.selectedstocks[i] + ";";
     }
-    console.log(this.state.selected_metrics);
     for(var metric of this.state.selected_metrics)
     {
-      console.log(metric);
-
-
-    
-      console.log(stocks);
-      let url = 'http://858af8b9.ngrok.io/financialy-metrics?stocks=' + stocks + '&metrics=' + metric + '&frequency=ANNUAL';
-      console.log("URL");
-      console.log(url);
-      
-      console.log(this2.state.selectedstocks);
-
-      // eslint-disable-next-line no-loop-func
+      metrics = metrics + metric+ ";";
+      metrics.replace(' ','%20');
+    }
+      let url = 'http://858af8b9.ngrok.io/financialy-metrics?stocks=' + stocks + '&metrics=' + metrics + '&frequency=ANNUAL';
+     
       var ret = axios.get(url).then(function (response) {
           
           // for each stock in returned object
           console.log(response.data.return_data);
-          // check for returned tickers in the response.data and cross reference before looping into syncgraphs
-          for ( let j=0; j < response.data.return_data.length; j++ )
+          for ( let j=0; j < response.data.return_data.length; j++ ) // loop through metrics 
           {
               let parsed_metric_data = response.data.return_data[j];
               let newArray = [];
-              console.log(parsed_metric_data);
               var firstyear = parseInt(parsed_metric_data.dates[0].split("-")[0]);
-              for ( let i= parsed_metric_data.dates.length-1; i >= 0; i--)
+              for ( let i= parsed_metric_data.dates.length-1; i >= 0; i--) // parse all dates sent
               {
                   let temp = { date: parseInt(firstyear-i)};
-                  temp[parsed_metric_data.ticker+parsed_metric_data.metric] = parseFloat(parsed_metric_data.data[i]);
+                  temp[parsed_metric_data.ticker+' '+parsed_metric_data.metric] = parseFloat(parsed_metric_data.data[i]);
                   newArray.push(temp);
               }
-
-              console.log("NEWARRAY")
-              console.log(newArray);
-              console.log(this2.state.metricsData);
-              if (this2.state.metricsData.length === 0)
+              if (this2.state.metricsData.length === 0) // First Metric
               {
                   this2.setState({'metricsData': newArray});
-                  console.log("123");
               }
-              else
+              else // Metrics already inside
               {
                 var olddata = this2.state.metricsData;
                 var newmetricdata = [];
@@ -640,41 +409,26 @@ class Dashboard extends Component {
                         }
                         else 
                         {
-                        if (isNaN(value)) 
-                        {
-                          newmetricdata.push(oldval);
-                          break;
-                        }
-                        else
-                        {
-                          oldval[key] = value;
-                          newmetricdata.push(oldval);
-                          break;
+                          if (isNaN(value)) 
+                          {
+                            newmetricdata.push(oldval);
+                            break;
+                          }
+                          else // add metric data
+                          {
+                            oldval[key] = value;
+                            newmetricdata.push(oldval);
+                            break;
+                          }
                         }
                       }
-                        
-                      //break;
-                      }
-                      
                     }
                   }
                 }
                 this2.setState({'metricsData': newmetricdata});
-                console.log("@@@@@@@@@@@@@@");
-                console.log(this2.state.metricsData);
-                console.log(newArray);
               }
-            // objCopy.lines.push({title: parsed_metric_data.ticker + parsed_metric_data.metric, coordinates: newArray })
-
           }
-
-
-          //qthis2.setState({frameProps : objCopy});
-          console.log("STATE")
-          console.log(this2.state)
-
     });
-  }
   }
   
   updateValues() {
@@ -738,17 +492,11 @@ handleautodelete = (event,value) => {
 }
 handleMetricsAddition = (event,value) => {
 const axios = require('axios');
-  // add the new metric into the metrics list
-  console.log(value);
   let {selected_metrics} = this.state;
   selected_metrics.push(value[value.length-1]);
-  // var new_metrics_arr = this.state.selected_metrics;
-  // new_metrics_arr
   this.setState({selected_metrics: selected_metrics});
-
   let current_metric = value[value.length-1];
   var this2 = this;
-
     var framePropsArray  = [];
     this.updatemetricsgraphs();
 }
@@ -766,10 +514,8 @@ handleStockAddition = (event,value) => {
     var profileurl = "https://financialmodelingprep.com/api/v3/company/profile/"  + event.currentTarget.innerText;
     console.log(url);
     let this2 = this;
-    var this3 = this;
-    var ret = axios.get(url).then(function (response) {
-        // handle success
-        console.log(response);
+    var ret = axios.get(url).then(function (response) 
+    { // handle success
         let parsed_data = JSON.parse(response.data[0].stock_data);
         let newArray = [];
         console.log(parsed_data);
@@ -778,15 +524,16 @@ handleStockAddition = (event,value) => {
           let temp = [ parsed_data.Date[i], parsed_data.Open[i]];//, parsed_data.High[i], parsed_data.Low[i], parsed_data.Close[i]];
           newArray.push(temp);
         }
-        console.log(newArray);
-        let stocklist ="";
+
+        let stocklist =""; //creat title for time series chart
         for (const ticker of selectedstocks)
         {
           stocklist += ticker + ", ";
         }
+
         stocklist = stocklist.substring(0,stocklist.length-2);
-        console.log(stockdata);
         stockseriesdata.push({name:ticker, data: newArray});
+
         let options = {
           chart:
           {
@@ -838,39 +585,6 @@ handleStockAddition = (event,value) => {
           });
         });
       this.updatemetricsgraphs();
-      
-
-
-
-
-        // var {bumpdata} = this.state;
-        // var self = this;
-        // var metrics_url = 'http://127.0.0.1:5000/financial-metrics?stocks='+ event.currentTarget.innerText +
-        //           '&metrics=REVENUE&frequency=QUARTERLY';
-     
-        //  var ret = axios.get(metrics_url).then(function (metrics_response) {
-     
-        //      console.log(metrics_response);
-        //      var return_data = metrics_response.data.return_data;
-        //      console.log("RETURN DATA");
-        //      console.log(return_data);
-        //      console.log("ARRAY VALUES");
-     
-        //      for ( var i=0; i < return_data.length; i++ ){
-        //        console.log(return_data[i]);
-        //        bumpdata[i].id = return_data[i].ticker + "-" + return_data[i].metric;
-        //        bumpdata[i].data[0].y = 9000;
-        //      }
-     
-        //      console.log("BUMP DATA");
-        //      console.log(bumpdata);
-        //      self.setState({bumpdata});
-        //      self.forceUpdate();
-        //      console.log("STATE");
-        //      console.log(self.state);
-     
-        //  });
-
 }
 handleStockDeletion= (event,value) => {
     console.log(event);
@@ -975,14 +689,7 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
       {
         console.log("uh oh, spaghettiOs");
       }
-  }
-
-//   <div>
-// <Button variant="outlined" className={classes.outlinedButtom}>
-//   Get help
-// </Button>
-// </div>
-  
+  }  
 
   render() {
     const { classes } = this.props;
