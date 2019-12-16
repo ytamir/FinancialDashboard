@@ -575,7 +575,7 @@ class Dashboard extends Component {
 
     for ( let i =0; i <  this2.state.selectedstocks.length; i++)
     {
-        stocks = stocks + this2.state.selectedstocks[i] + ";"
+        stocks = stocks + this2.state.selectedstocks[i] + ";";
     }
     console.log(this.state.selected_metrics);
     for(var metric of this.state.selected_metrics)
