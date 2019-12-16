@@ -61,7 +61,7 @@ export const NumberMask = (value) => (
 )
 export default  class Syncgraphs extends React.Component {
     render() {
-      if(this.props.metrics)
+      if(this.props.metrics && this.props.stocks.length > 0)
       {
       var prevthis = this;
       let countcolor = -1;

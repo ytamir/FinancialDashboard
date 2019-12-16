@@ -584,101 +584,94 @@ class Dashboard extends Component {
 
 
     
-    
-    let url = 'http://127.0.0.1:5000/financialy-metrics?stocks=' + stocks + '&metrics=' + metric + '&frequency=ANNUAL';
-    console.log("URL")
-    console.log(url)
-    
-    console.log(this2.state.selectedstocks)
+      console.log(stocks);
+      let url = 'http://858af8b9.ngrok.io/financialy-metrics?stocks=' + stocks + '&metrics=' + metric + '&frequency=ANNUAL';
+      console.log("URL");
+      console.log(url);
+      
+      console.log(this2.state.selectedstocks);
 
-    // eslint-disable-next-line no-loop-func
-    var ret = axios.get(url).then(function (response) {
-
-        // var objCopy = {}; // objCopy will store a copy of the frameProps
-        // var key;
-        // for (key in this2.state.frameProps) {
-        // objCopy[key] = this2.state.frameProps[key];
-        // }
-        // objCopy.lines = []
-        
-        
-        // for each stock in returned object
-        console.log(response.data.return_data);
-        for ( let j=0; j < response.data.return_data.length; j++ )
-        {
-            let parsed_metric_data = response.data.return_data[j];
-            let newArray = [];
-            console.log(parsed_metric_data);
-            var firstyear = parseInt(parsed_metric_data.dates[0].split("-")[0]);
-            for ( let i= parsed_metric_data.dates.length-1; i >= 0; i--)
-            {
-                let temp = { date: parseInt(firstyear-i)};
-                temp[parsed_metric_data.ticker+parsed_metric_data.metric] = parseFloat(parsed_metric_data.data[i]);
-                newArray.push(temp);
-            }
-
-            console.log("NEWARRAY")
-            console.log(newArray);
-            console.log(this2.state.metricsData);
-            if (this2.state.metricsData.length === 0)
-            {
-                this2.setState({'metricsData': newArray});
-                console.log("123");
-            }
-            else
-            {
-              var olddata = this2.state.metricsData;
-              var newmetricdata = [];
-              for (var newval of newArray) // new stock metric combo to add
+      // eslint-disable-next-line no-loop-func
+      var ret = axios.get(url).then(function (response) {
+          
+          // for each stock in returned object
+          console.log(response.data.return_data);
+          // check for returned tickers in the response.data and cross reference before looping into syncgraphs
+          for ( let j=0; j < response.data.return_data.length; j++ )
+          {
+              let parsed_metric_data = response.data.return_data[j];
+              let newArray = [];
+              console.log(parsed_metric_data);
+              var firstyear = parseInt(parsed_metric_data.dates[0].split("-")[0]);
+              for ( let i= parsed_metric_data.dates.length-1; i >= 0; i--)
               {
-                for( var oldval of olddata) // old items
+                  let temp = { date: parseInt(firstyear-i)};
+                  temp[parsed_metric_data.ticker+parsed_metric_data.metric] = parseFloat(parsed_metric_data.data[i]);
+                  newArray.push(temp);
+              }
+
+              console.log("NEWARRAY")
+              console.log(newArray);
+              console.log(this2.state.metricsData);
+              if (this2.state.metricsData.length === 0)
+              {
+                  this2.setState({'metricsData': newArray});
+                  console.log("123");
+              }
+              else
+              {
+                var olddata = this2.state.metricsData;
+                var newmetricdata = [];
+                for (var newval of newArray) // new stock metric combo to add
                 {
-                  console.log("newval:  ");
-                  console.log(newval);
-                  console.log("oldval:  ");
-                  console.log(oldval);
-                  if ( newval.date === oldval.date)
+                  for( var oldval of olddata) // old items
                   {
-                    for (let [key, value] of Object.entries(newval)) 
+                    console.log("newval:  ");
+                    console.log(newval);
+                    console.log("oldval:  ");
+                    console.log(oldval);
+                    if ( newval.date === oldval.date)
                     {
-                      if (key === 'date'  )
+                      for (let [key, value] of Object.entries(newval)) 
                       {
-                        //nothing, its already in there or NaN
+                        if (key === 'date'  )
+                        {
+                          //nothing, its already in there or NaN
+                        }
+                        else 
+                        {
+                        if (isNaN(value)) 
+                        {
+                          newmetricdata.push(oldval);
+                          break;
+                        }
+                        else
+                        {
+                          oldval[key] = value;
+                          newmetricdata.push(oldval);
+                          break;
+                        }
                       }
-                      else 
-                      {
-                      if (isNaN(value)) 
-                      {
-                        newmetricdata.push(oldval);
-                        break;
+                        
+                      //break;
                       }
-                      else
-                      {
-                        oldval[key] = value;
-                        newmetricdata.push(oldval);
-                        break;
-                      }
-                    }
                       
-                    //break;
                     }
-                    
                   }
                 }
+                this2.setState({'metricsData': newmetricdata});
+                console.log("@@@@@@@@@@@@@@");
+                console.log(this2.state.metricsData);
+                console.log(newArray);
               }
-              this2.setState({'metricsData': newmetricdata});
-              console.log("@@@@@@@@@@@@@@");
-              console.log(this2.state.metricsData);
-              console.log(newArray);
-            }
-           // objCopy.lines.push({title: parsed_metric_data.ticker + parsed_metric_data.metric, coordinates: newArray })
+            // objCopy.lines.push({title: parsed_metric_data.ticker + parsed_metric_data.metric, coordinates: newArray })
 
-         }
+          }
 
 
-        //qthis2.setState({frameProps : objCopy});
-        console.log("STATE")
-        console.log(this2.state)
+          //qthis2.setState({frameProps : objCopy});
+          console.log("STATE")
+          console.log(this2.state)
 
     });
   }
@@ -709,39 +702,6 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
-    this.updateValues();
-  }
-
-
-  
-
-  handleChangeAmount = (event, value) => {
-    const axios = require('axios');
-
-    // Make a request for a user with a given ID
-    axios.get('http://127.0.0.1:5000/post/5')
-    .then(function (response) {
-      // handle success
-      console.log(response);
-    })
-    .catch(function (error) {
-      // handle error
-      console.log(error);
-    })
-    .finally(function () {
-      // always executed
-    });
-    this.setState({amount: value, loading: false});
-    this.updateValues();
-  }
-
-  handleChangePeriod = (event, value) => {
-    this.setState({period: value, loading: false});
-    this.updateValues();
-  }
-
-  handleChangeStart = (event, value) => {
-    this.setState({start: value, loading: false});
     this.updateValues();
   }
 
@@ -802,7 +762,7 @@ handleStockAddition = (event,value) => {
     // Make a request for a user with a given ID
     var ticker = event.currentTarget.innerText;
     selectedstocks.push(event.currentTarget.innerText);
-    var url = 'http://127.0.0.1:5000/get/daily_price/' + event.currentTarget.innerText + '/d/d';
+    var url = 'http://858af8b9.ngrok.io/get/daily_price/' + event.currentTarget.innerText + '/d/d';
     var profileurl = "https://financialmodelingprep.com/api/v3/company/profile/"  + event.currentTarget.innerText;
     console.log(url);
     let this2 = this;
@@ -878,6 +838,7 @@ handleStockAddition = (event,value) => {
           });
         });
       this.updatemetricsgraphs();
+      
 
 
 
