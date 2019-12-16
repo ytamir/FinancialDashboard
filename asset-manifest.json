@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/material-sense/static/css/main.bda77fa2.chunk.css",
+    "main.js": "/material-sense/static/js/main.285c20d0.chunk.js",
+    "main.js.map": "/material-sense/static/js/main.285c20d0.chunk.js.map",
+    "runtime~main.js": "/material-sense/static/js/runtime~main.55b3dbbc.js",
+    "runtime~main.js.map": "/material-sense/static/js/runtime~main.55b3dbbc.js.map",
+    "static/js/2.9cb190da.chunk.js": "/material-sense/static/js/2.9cb190da.chunk.js",
+    "static/js/2.9cb190da.chunk.js.map": "/material-sense/static/js/2.9cb190da.chunk.js.map",
+    "index.html": "/material-sense/index.html",
+    "precache-manifest.809982a792fb7af96ff6a4b5592b8a38.js": "/material-sense/precache-manifest.809982a792fb7af96ff6a4b5592b8a38.js",
+    "service-worker.js": "/material-sense/service-worker.js",
+    "static/css/main.bda77fa2.chunk.css.map": "/material-sense/static/css/main.bda77fa2.chunk.css.map",
+    "static/media/logo.svg": "/material-sense/static/media/logo.ee7cd8ed.svg",
+    "static/media/shape.svg": "/material-sense/static/media/shape.43e76283.svg"
+  }
+}
