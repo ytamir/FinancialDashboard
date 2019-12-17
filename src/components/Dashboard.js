@@ -366,7 +366,7 @@ class Dashboard extends Component {
       metrics = metrics + metric+ ";";
       metrics.replace(' ','%20');
     }
-      let url = 'http://858af8b9.ngrok.io/financialy-metrics?stocks=' + stocks + '&metrics=' + metrics + '&frequency=ANNUAL';
+      let url = 'http://bcd91062.ngrok.io/financialy-metrics?stocks=' + stocks + '&metrics=' + metrics + '&frequency=ANNUAL';
      
       var ret = axios.get(url).then(function (response) {
           
@@ -510,7 +510,7 @@ handleStockAddition = (event,value) => {
     // Make a request for a user with a given ID
     var ticker = event.currentTarget.innerText;
     selectedstocks.push(event.currentTarget.innerText);
-    var url = 'http://858af8b9.ngrok.io/get/daily_price/' + event.currentTarget.innerText + '/d/d';
+    var url = 'http://bcd91062.ngrok.io/get/daily_price/' + event.currentTarget.innerText + '/d/d';
     var profileurl = "https://financialmodelingprep.com/api/v3/company/profile/"  + event.currentTarget.innerText;
     console.log(url);
     let this2 = this;
