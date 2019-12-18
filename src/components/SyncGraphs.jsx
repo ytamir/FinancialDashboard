@@ -8,6 +8,13 @@ import LineElement from './LineElement';
 import NumberFormat from 'react-number-format';
 
 function nFormatter(num, digits) {
+  let lessthanzero = false;
+  if(num < 0)
+  {
+    lessthanzero = true;
+    num = num *-1;
+
+  }
   var si = [
     { value: 1, symbol: "" },
     { value: 1E3, symbol: "K" },
@@ -22,12 +29,19 @@ function nFormatter(num, digits) {
       break;
     }
   }
+  if(lessthanzero)
+  {
+    return -1*((num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol);
+  }
+  else
+  {
   return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
+  }
 }
 
 function formatMoney(amount, decimalCount = 0, decimal = ".", thousands = ",") {
   try {
-    if( amount > 10000)
+    if( Math.abs(amount) > 10000)
     {
     decimalCount = Math.abs(decimalCount);
     decimalCount = isNaN(decimalCount) ? 2 : decimalCount;
@@ -67,6 +81,8 @@ export default  class Syncgraphs extends React.Component {
       let countcolor = -1;
       return <div>
       <ul>{
+
+      
         
       this.props.metrics.map(function(element, i){ // for every selected metric
         countcolor = 0;
@@ -92,7 +108,7 @@ export default  class Syncgraphs extends React.Component {
             prevthis.props.stocks.map((id) => { //for every selected stock
               countcolor++; // basis' | 'basisClosed' | 'basisOpen' | 'linear' | 'linearClosed' | 'natural' | 'monotoneX' | 'monotoneY' | 'monotone' | 'step' | 'stepBefore' | 'stepAfter'
               // use element and id to get the name of stock metric combo
-            return ( <Line type="monotoneX" key={id} dataKey={id+" "+element} stroke={prevthis.props.graphcolors[countcolor-1]} strokeWidth={2} />)  
+            return ( <Line name={id} type="monotoneX" key={id} dataKey={id+" "+element} stroke={prevthis.props.graphcolors[countcolor-1]} strokeWidth={3} />)  
             })
         }
         </LineChart> </React.Fragment> })} </ul>      

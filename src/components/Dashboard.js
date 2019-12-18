@@ -393,16 +393,15 @@ class Dashboard extends Component {
       return;
     }
 
-    for ( let i =0; i <  this2.state.selectedstocks.length; i++)
+    for ( let stock of this2.state.selectedstocks)
     {
-        stocks = stocks + this2.state.selectedstocks[i] + ";";
-    }
+    
     for(var metric of this.state.selected_metrics)
     {
       metrics = metrics + metric+ ";";
       metrics.replace(' ','%20');
-    }
-      let url = 'https://bcd91062.ngrok.io/financialy-metrics?stocks=' + stocks + '&metrics=' + metrics + '&frequency=ANNUAL';
+    
+      let url = 'https://bcd91062.ngrok.io/financialy-metrics?stocks=' + stock + ';&metrics=' + metric + ';&frequency=ANNUAL';
      
       var ret = axios.get(url).then(function (response) {
           
@@ -461,6 +460,8 @@ class Dashboard extends Component {
               }
           }
     });
+    }
+  }
   }
   
   updateValues() {
@@ -536,25 +537,25 @@ handleMetricsDeletion = (event,value) => {
   //update list of metrics
   
   var deletedmetric = arr_diff(this.state.selected_metrics,value);
-  console.log(deletedmetric);
+  //console.log(deletedmetric);
 
 
   let count = 0;
 
-  console.log(this.state.metricsData);
+  //console.log(this.state.metricsData);
   for (var item of this.state.metricsData) //loop through each date
   {
-    console.log(item);
+   // console.log(item);
     if( item !== undefined)
     {
     for (var [key,num] of Object.entries(item)) //loop through data points
     {
       for(var metric of deletedmetric) // loop through new metrics list
       {
-        console.log("key: " + key + " metric: " + metric +  "item.date: " + item.date );
+      //  console.log("key: " + key + " metric: " + metric +  "item.date: " + item.date );
         if( key.includes(metric)) // keep data from stocks that still exist
         {
-          console.log("DELETEDkey: " + key + " metric: " + metric +  "item.date: " + item.date );
+       //   console.log("DELETEDkey: " + key + " metric: " + metric +  "item.date: " + item.date );
           delete newmetricdata[count][key];
         }
       }
@@ -563,7 +564,7 @@ handleMetricsDeletion = (event,value) => {
     count++;
   }
 
-  console.log(newmetricdata);
+ // console.log(newmetricdata);
 
   this.setState({metricsData: newmetricdata, selected_metrics:value});
   
@@ -581,7 +582,7 @@ handleStockAddition = (event,value) => { // add stock color same as sync graph
     { // handle success
         let parsed_data = JSON.parse(response.data[0].stock_data);
         let newArray = [];
-        console.log(parsed_data);
+       // console.log(parsed_data);
         for ( let i=0; i < Object.keys(parsed_data.Date).length; i++){
           //let temp = { date:parsed_data.Date[i], close:parsed_data.Close[i], high:parsed_data.High[i], volume:parsed_data.Volume[i], open:parsed_data.Open[i], low:parsed_data.Low[i] };
           let temp = [ parsed_data.Date[i], parsed_data.Open[i]];//, parsed_data.High[i], parsed_data.Low[i], parsed_data.Close[i]];
@@ -650,8 +651,8 @@ handleStockAddition = (event,value) => { // add stock color same as sync graph
       this.updatemetricsgraphs();
 }
 handleStockDeletion= (event,value) => {
-    console.log(event);
-    console.log(value);
+   // console.log(event);
+   // console.log(value);
     var newArr = [];
     var new_selected_stocks = [];
     var stocklist = "";
@@ -714,8 +715,8 @@ handleStockDeletion= (event,value) => {
     }
 
     // update metricData
-    console.log(value);
-    console.log(this.state.selectedstocks);
+    //console.log(value);
+    //console.log(this.state.selectedstocks);
     
     var newstocks = [];
     for (let s of value)
@@ -732,12 +733,12 @@ handleStockDeletion= (event,value) => {
       {
         for(var stock of deletedstock) // loop through deleted stocks
         {       
-          console.log("item");
-          console.log(item);
-          console.log("key");
-          console.log(key);
-          console.log("deleted stock");
-          console.log(stock);
+          // console.log("item");
+          // console.log(item);
+          // console.log("key");
+          // console.log(key);
+          // console.log("deleted stock");
+          // console.log(stock);
 
           if( key.startsWith(stock)) // keep data from stocks that still exist
           {            
@@ -770,10 +771,10 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
 }
 
   handleChangeStockList = (event,value) => {
-    console.log(this.state);
-    console.log(this.state.selectedstocks);
-    console.log(this.state.selectedstocks.length);
-    console.log(Object.keys(value).length);
+    //console.log(this.state);
+   // console.log(this.state.selectedstocks);
+   // console.log(this.state.selectedstocks.length);
+   // console.log(Object.keys(value).length);
       if( this.state.selectedstocks.length <  Object.keys(value).length) // new stock is selected
       {
         this.handleStockAddition(event, value);
