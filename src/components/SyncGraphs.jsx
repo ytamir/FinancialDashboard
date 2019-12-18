@@ -55,6 +55,11 @@ export const NumberMask = (value) => (
   />
 )
 export default  class Syncgraphs extends React.Component {
+
+      delete(id){
+        this.props.delete(id);
+      }
+
     render() {
       if(this.props.metrics && this.props.stocks.length > 0)
       {
@@ -87,7 +92,7 @@ export default  class Syncgraphs extends React.Component {
             prevthis.props.stocks.map((id) => { //for every selected stock
               countcolor++; // basis' | 'basisClosed' | 'basisOpen' | 'linear' | 'linearClosed' | 'natural' | 'monotoneX' | 'monotoneY' | 'monotone' | 'step' | 'stepBefore' | 'stepAfter'
               // use element and id to get the name of stock metric combo
-            return ( <Line type="monotoneX" dataKey={id+" "+element} stroke={prevthis.props.graphcolors[countcolor-1]} strokeWidth={2} />)  
+            return ( <Line type="monotoneX" key={id} dataKey={id+" "+element} stroke={prevthis.props.graphcolors[countcolor-1]} strokeWidth={2} />)  
             })
         }
         </LineChart> </React.Fragment> })} </ul>      

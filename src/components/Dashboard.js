@@ -240,6 +240,29 @@ margin={{
 // Industry:"Application Software",
 // CEO: "David Brent Shafer",
 // Website: "http://www.cerner.com"}
+function arr_diff (a1, a2) {
+
+  var a = [], diff = [];
+
+  for (var i = 0; i < a1.length; i++) {
+      a[a1[i]] = true;
+  }
+
+  for (var i = 0; i < a2.length; i++) {
+      if (a[a2[i]]) {
+          delete a[a2[i]];
+      } else {
+          a[a2[i]] = true;
+      }
+  }
+
+  for (var k in a) {
+      diff.push(k);
+  }
+
+  return diff;
+}
+
 function createData(url, companyName, exchange, range, sector, industry, ceo, website) {
   return { url, companyName, exchange, range, sector, industry, ceo, website };
 }
@@ -280,6 +303,7 @@ class Dashboard extends Component {
 
   
   state = {
+    colorcount: 0,
     stockseriesdata: [],
     selectedstocks: [],
     selected_metrics: [],
@@ -350,12 +374,24 @@ class Dashboard extends Component {
     metricsData:[]
     
   };
+
+  delete(id){
+    this.setState(prevState => ({
+        data: prevState.data.filter(el => el != id )
+    }));
+ }
+
+  
   
   updatemetricsgraphs() {
     var stocks = "";
     var metrics = "";
     const axios = require('axios');
     var this2 = this;
+    if(this.state.selected_metrics.length === 0 || this.state.selectedstocks.length === 0)
+    {
+      return;
+    }
 
     for ( let i =0; i <  this2.state.selectedstocks.length; i++)
     {
@@ -395,10 +431,6 @@ class Dashboard extends Component {
                 {
                   for( var oldval of olddata) // old items
                   {
-                    console.log("newval:  ");
-                    console.log(newval);
-                    console.log("oldval:  ");
-                    console.log(oldval);
                     if ( newval.date === oldval.date)
                     {
                       for (let [key, value] of Object.entries(newval)) 
@@ -476,9 +508,6 @@ class Dashboard extends Component {
         // If values of same property are not equal,
         // objects are not equivalent
         if (a[propName] !== b[propName]) {
-            console.log(propName);
-            console.log(a[propName]);
-            console.log(b[propName]);
             return false;
         }
     }
@@ -501,18 +530,52 @@ const axios = require('axios');
     this.updatemetricsgraphs();
 }
 handleMetricsDeletion = (event,value) => {
-  console.log("lkhdlkasjhflkjashdkfj");
+  // update metricData
+  var newmetricdata = this.state.metricsData;
+  var new_metrics_list = this.state.metricsData;
+  //update list of metrics
+  
+  var deletedmetric = arr_diff(this.state.selected_metrics,value);
+  console.log(deletedmetric);
+
+
+  let count = 0;
+
+  console.log(this.state.metricsData);
+  for (var item of this.state.metricsData) //loop through each date
+  {
+    console.log(item);
+    if( item !== undefined)
+    {
+    for (var [key,num] of Object.entries(item)) //loop through data points
+    {
+      for(var metric of deletedmetric) // loop through new metrics list
+      {
+        console.log("key: " + key + " metric: " + metric +  "item.date: " + item.date );
+        if( key.includes(metric)) // keep data from stocks that still exist
+        {
+          console.log("DELETEDkey: " + key + " metric: " + metric +  "item.date: " + item.date );
+          delete newmetricdata[count][key];
+        }
+      }
+    }
+    }
+    count++;
+  }
+
+  console.log(newmetricdata);
+
+  this.setState({metricsData: newmetricdata, selected_metrics:value});
   
 }
-handleStockAddition = (event,value) => {
+handleStockAddition = (event,value) => { // add stock color same as sync graph
   const axios = require('axios');
-    let {selectedstocks, stockdata, stockseriesdata} = this.state;
+    let {graphcolors, selectedstocks, stockdata, stockseriesdata} = this.state;
     // Make a request for a user with a given ID
-    var ticker = event.currentTarget.innerText;
-    selectedstocks.push(event.currentTarget.innerText);
-    var url = 'https://bcd91062.ngrok.io/get/daily_price/' + event.currentTarget.innerText + '/d/d';
-    var profileurl = "https://financialmodelingprep.com/api/v3/company/profile/"  + event.currentTarget.innerText;
-    console.log(url);
+    var ticker = value[value.length-1].symbol;
+    selectedstocks.push(ticker);
+    var url = 'https://bcd91062.ngrok.io/get/daily_price/' + ticker + '/d/d';
+    var profileurl = "https://financialmodelingprep.com/api/v3/company/profile/"  + ticker;
     let this2 = this;
     var ret = axios.get(url).then(function (response) 
     { // handle success
@@ -532,7 +595,7 @@ handleStockAddition = (event,value) => {
         }
 
         stocklist = stocklist.substring(0,stocklist.length-2);
-        stockseriesdata.push({name:ticker, data: newArray});
+        stockseriesdata.push({name:ticker, data: newArray, color: graphcolors[selectedstocks.length-1]});
 
         let options = {
           chart:
@@ -591,7 +654,6 @@ handleStockDeletion= (event,value) => {
     console.log(value);
     var newArr = [];
     var new_selected_stocks = [];
-    let count = 0;
     var stocklist = "";
 
     //update title
@@ -635,6 +697,7 @@ handleStockDeletion= (event,value) => {
     };
 
     //update rowdata
+   
     var new_rowdata = [];
     for(var rdata of this.state.rowdata)
     {
@@ -650,7 +713,42 @@ handleStockDeletion= (event,value) => {
       }
     }
 
-    this.setState({stockdata: options, selectedstocks: new_selected_stocks, stockseriesdata:newArr, rowdata:new_rowdata});
+    // update metricData
+    console.log(value);
+    console.log(this.state.selectedstocks);
+    
+    var newstocks = [];
+    for (let s of value)
+    {
+      newstocks.push(s.symbol);
+    }
+    
+    let deletedstock = arr_diff(newstocks, this.state.selectedstocks);
+    var newmetricdata = this.state.metricsData;
+    let cnt = 0;
+    for (var item of this.state.metricsData) //loop through each date
+    {
+      for (var [key,val1] of Object.entries(item)) //loop through data points
+      {
+        for(var stock of deletedstock) // loop through deleted stocks
+        {       
+          console.log("item");
+          console.log(item);
+          console.log("key");
+          console.log(key);
+          console.log("deleted stock");
+          console.log(stock);
+
+          if( key.startsWith(stock)) // keep data from stocks that still exist
+          {            
+            delete newmetricdata[cnt][key];
+          }
+        }
+      }
+      cnt++;
+    }
+
+    this.setState({metricsData: newmetricdata, stockdata: options, selectedstocks: new_selected_stocks, stockseriesdata:newArr, rowdata:new_rowdata});
 }
 
 handleChangeMetricsList = (event,value) => { // onchangefunction for metrics autocomplete
@@ -706,24 +804,24 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
 
               <Grid container justify="center" spacing={2}  >
               <Grid spacing={24} alignItems="center" justify="center" container className={classes.grid}>
-                <Grid xs={11} spacing={3} alignItems="center" justify="center" container className={classes.grid}>
-                  <Grid item xs={3}>
-                  <Card className={classes.card}>
+                <Grid xs={10} spacing={3} alignItems="center" justify="center" container className={classes.grid}>
+                  <Grid item xs={3} >
+                  <Card m={1} className={classes.card}>
                     <CardContent>
                       <Typography className={classes.title} color="textSecondary" gutterBottom>
                         Dow Jones
                       </Typography>
-                      <IndexContainer indexname = ".DJI" />
+                      <IndexContainer indexname = ".DJI" key="3GJ8FAC1VNENVM39" />
                     </CardContent>
                   </Card>
                   </Grid>
-                  <Grid item xs={3}>
+                  <Grid item xs={3} spacing={1}>
                   <Card className={classes.card}>
                     <CardContent>
                       <Typography className={classes.title} color="textSecondary" gutterBottom>
                         Nasdaq
                       </Typography>
-                      <IndexContainer indexname = "AAPL" />
+                      <IndexContainer indexname = "ONEQ" key="WPYXUSZL2IBH26QC" />
                     </CardContent>
                   </Card>
                   </Grid>
@@ -733,7 +831,7 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                       <Typography className={classes.title} color="textSecondary" gutterBottom>
                         S&P 500 
                       </Typography>
-                      <IndexContainer indexname = ".INX" />
+                      <IndexContainer indexname = ".INX" key="HPMROQZGGJAOOA13"/>
                     </CardContent>
                   </Card>
                   </Grid>
@@ -743,20 +841,20 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                       <Typography className={classes.title} color="textSecondary" gutterBottom>
                         NYSE
                       </Typography>
-                      <IndexContainer indexname = "%5ENYA" />
+                      <IndexContainer indexname = "%5ENYA" key="5T77KQXSYKOQWAUM" />
                     </CardContent>
                   </Card>
                   </Grid>
                   
                   </Grid>
-              <Grid xs={11} spacing={3} alignItems="center" justify="center" container className={classes.grid}>    
+              <Grid xs={10} spacing={3} alignItems="center" justify="center" container className={classes.grid}>    
               <Grid item xs={6} >
               <Autocomplete
                 multiple
                 filterSelectedOptions
                 options={stored_stocks}
-                getOptionLabel={option => option.symbol}
                 defaultValue={[]}
+                getOptionLabel={option => option.symbol}
                 onChange={this.handleChangeStockList}
                 onDelete={this.handleautodelete}
                 ListboxComponent={ListboxComponent}
@@ -769,8 +867,8 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                   />
                 )}
                 renderOption={(option, { inputValue }) => {
-                  const matches = match(option.symbol, inputValue);
-                  const parts = parse(option.symbol, matches);
+                  const matches = match(option.symbol + " - " + option.name, inputValue);
+                  const parts = parse(option.symbol + " - " + option.name, matches);
           
                   return (
                     <div>
@@ -822,20 +920,22 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
               
               </Grid>
               
-              <Grid xs={11} spacing={3} alignItems="center" justify="center" container className={classes.grid}> 
+              <Grid xs={10} spacing={3} alignItems="center" justify="center" container className={classes.grid}> 
               <Grid item xs={6} >
               <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stockdata} />
               </Grid>
               <Grid item xs={6}>
-              <Syncgraphs name='Fruits' graphcolors={this.state.graphcolors} metricsData={this.state.metricsData} metrics={this.state.selected_metrics} stocks={this.state.selectedstocks}/>
+              <Syncgraphs name='Fruits' delete={this.delete} graphcolors={this.state.graphcolors} metricsData={this.state.metricsData} metrics={this.state.selected_metrics} stocks={this.state.selectedstocks}/>
               </Grid>
               </Grid>
+              <Grid item xs={10}>
               <MaterialTable
               title="Company Data"
               options={{toolbar: false, padding:'dense', paginationType:'stepped',columnsButton:'false'}}
               columns={columns}
               data={rowdata}
             />
+            </Grid>
             
 
               </Grid>

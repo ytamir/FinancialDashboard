@@ -1,4 +1,5 @@
 import React from 'react'
+import HighchartsStock from 'highcharts/highstock';
 import HighchartsReact from 'highcharts-react-official'
 import Highcharts from 'highcharts'
 
@@ -8,7 +9,7 @@ export default class IndexContainer extends React.Component {
     this.state = { // TODO remove chart title
       chartOptions: {
         title: {
-            text: 'My chart'
+            text: ''
           },
         exporting: {
             buttons: {
@@ -24,7 +25,7 @@ export default class IndexContainer extends React.Component {
             enabled: false
         },
         chart: {
-            height: 200,
+            height: 1,
             type: 'area'
         },
         plotOptions: {
@@ -49,7 +50,6 @@ export default class IndexContainer extends React.Component {
         }
       }
     }
-    this.timer();
     // setInterval(function(){
     //     console.log(this);
     //     const { chartOptions } = this.state;
@@ -75,7 +75,7 @@ export default class IndexContainer extends React.Component {
         let cur = this;
         
 
-        let aplha_url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol='+this.props.indexname+'&interval=5min&outputsize=full&apikey=3GJ8FAC1VNENVM39';
+        let aplha_url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol='+this.props.indexname+'&interval=5min&outputsize=compact&apikey='+this.props.key;
         let url = "https://financialmodelingprep.com/api/v3/majors-indexes/" + this.props.indexname;
         axios.get(aplha_url).then(function (response) {
             // handle success
@@ -89,17 +89,29 @@ export default class IndexContainer extends React.Component {
         //console.log(response.data["Time Series (5min)"]);
         var newdata = [];
         var threshold = 0;
-        var count = 0;
+        var minitem = 99999999;
+        var maxitem = -2;
+        var lastitem;
         for (const item of Object.entries(response.data["Time Series (5min)"]))
         {
-          if(count === 0)
+          if(parseFloat(item[1]["1. open"]) > maxitem )
           {
-            threshold = parseFloat(item[1]["1. open"]);
+            maxitem = parseFloat(item[1]["1. open"]);
           }
+
+          if(parseFloat(item[1]["1. open"]) < minitem )
+          {
+            minitem = parseFloat(item[1]["1. open"]);
+          }
+
+          lastitem = parseFloat(item[1]["1. open"]);
+         
          // console.log(item);
-          newdata.push([Date.parse(item[0]),parseFloat(item[1]["1. open"])]);
-          count++;
+          newdata.push( [Date.parse(item[0]),parseFloat(item[1]["1. open"])]);
         }
+        console.log(minitem);
+        console.log(maxitem);
+        threshold = lastitem;
         newdata.reverse();
         //console.log(newdata);
     
@@ -107,7 +119,11 @@ export default class IndexContainer extends React.Component {
         cur.setState({
             chartOptions: {
               xAxis: {
-                type: 'datetime'
+                type: 'datetime',
+                ordinal:true
+            },
+            chart: {
+              height: (7 / 16 * 100) + '%' // 16:9 ratio
             },   
             area: {
               fillColor: {
@@ -149,9 +165,8 @@ export default class IndexContainer extends React.Component {
                 text: ''
               },
             yAxis:{
-              title: {
-                text: 'price'
-            }
+              min: minitem,
+              max: maxitem
             }
             }});
           })
@@ -197,7 +212,7 @@ export default class IndexContainer extends React.Component {
     return (
       <div>
         <HighchartsReact
-          highcharts={Highcharts}
+          highcharts={HighchartsStock}
           options={this.state.chartOptions}
         />
       </div> 
