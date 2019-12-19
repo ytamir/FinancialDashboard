@@ -86,6 +86,8 @@ export default  class Syncgraphs extends React.Component {
         
       this.props.metrics.map(function(element, i){ // for every selected metric
         countcolor = 0;
+        if ( prevthis.props.device === "pc")
+        {
         return <React.Fragment> <h4>{element}</h4>  <LineChart
         width={500}
         height={200}
@@ -103,7 +105,7 @@ export default  class Syncgraphs extends React.Component {
               return nFormatter(tick, 3); }}/>
         <Tooltip formatter={value => {
               return formatMoney(value); }}/>
-        <ReferenceLine y={0} stroke='#000'/>
+        
         {
             prevthis.props.stocks.map((id) => { //for every selected stock
               countcolor++; // basis' | 'basisClosed' | 'basisOpen' | 'linear' | 'linearClosed' | 'natural' | 'monotoneX' | 'monotoneY' | 'monotone' | 'step' | 'stepBefore' | 'stepAfter'
@@ -111,13 +113,47 @@ export default  class Syncgraphs extends React.Component {
             return ( <Line name={id} type="monotoneX" key={id} dataKey={id+" "+element} stroke={prevthis.props.graphcolors[countcolor-1]} strokeWidth={3} />)  
             })
         }
-        </LineChart> </React.Fragment> })} </ul>      
+      </LineChart> </React.Fragment> }
+        else // mobile
+        {
+          let graphwidth = Math.floor(prevthis.props.width*.9);
+          //console.log()
+          return <React.Fragment> <h4>{element}</h4>  <LineChart
+        width={graphwidth}
+        height={150}
+        data={prevthis.props.metricsData}
+        syncId="anId"
+        margin={{
+          top: 10, right: 30, left: 0, bottom: 0,
+        }}
+        >
+
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" />
+        <Legend/>
+        <YAxis scale="sqrt" tickFormatter={tick => {
+              return nFormatter(tick, 3); }}/>
+        <Tooltip formatter={value => {
+              return formatMoney(value); }}/>
+        
+        {
+            prevthis.props.stocks.map((id) => { //for every selected stock
+              countcolor++; // basis' | 'basisClosed' | 'basisOpen' | 'linear' | 'linearClosed' | 'natural' | 'monotoneX' | 'monotoneY' | 'monotone' | 'step' | 'stepBefore' | 'stepAfter'
+              // use element and id to get the name of stock metric combo
+            return ( <Line name={id} type="monotoneX" key={id} dataKey={id+" "+element} stroke={prevthis.props.graphcolors[countcolor-1]} strokeWidth={3} />)  
+            })
+        }
+      </LineChart> </React.Fragment>
+        }
+        })} </ul>      
         </div>
+      
       }
       else
       {
         return null;
       }
     }
+  
 
 };

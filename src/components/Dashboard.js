@@ -304,6 +304,7 @@ class Dashboard extends Component {
   
   state = {
     colorcount: 0,
+    width: window.innerWidth,
     stockseriesdata: [],
     selectedstocks: [],
     selected_metrics: [],
@@ -487,10 +488,19 @@ class Dashboard extends Component {
 
     
   }
-
-  componentDidMount() {
-    this.updateValues();
+  componentWillMount() {
+    window.addEventListener('resize', this.handleWindowSizeChange);
   }
+
+  // make sure to remove the listener
+  // when the component is not mounted anymore
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleWindowSizeChange);
+  }
+
+  handleWindowSizeChange = () => {
+    this.setState({ width: window.innerWidth });
+  };
 
   isEquivalent(a, b) {
     // Create arrays of property names
@@ -792,158 +802,268 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
 
   render() {
     const { classes } = this.props;
-    const { amount, period, start, monthlyPayment,
+    const { width, amount, period, start, monthlyPayment,
       monthlyInterest, data, loading, options,metrics, stockdata, toptions, selectedstocks, stored_stocks, bumpdata, names , rowdata, columns } = this.state;
-    const currentPath = this.props.location.pathname
+    const currentPath = this.props.location.pathname;
+    const isMobile = width <= 500;
 
-    return (
-      <React.Fragment>
-        <CssBaseline />
-        <Topbar currentPath={currentPath} />
-        <div className={classes.root}>
+    if (!isMobile) //is pc
+    {
+      return (
+        <React.Fragment>
+          <CssBaseline />
+          <Topbar currentPath={currentPath} />
+          <div className={classes.root}>
 
 
-              <Grid container justify="center" spacing={2}  >
-              <Grid spacing={24} alignItems="center" justify="center" container className={classes.grid}>
-                <Grid xs={10} spacing={3} alignItems="center" justify="center" container className={classes.grid}>
-                  <Grid item xs={3} >
-                  <Card m={1} className={classes.card}>
-                    <CardContent>
-                      <Typography className={classes.title} color="textSecondary" gutterBottom>
-                        Dow Jones
-                      </Typography>
-                      <IndexContainer indexname = ".DJI" key="3GJ8FAC1VNENVM39" />
-                    </CardContent>
-                  </Card>
-                  </Grid>
-                  <Grid item xs={3} spacing={1}>
-                  <Card className={classes.card}>
-                    <CardContent>
-                      <Typography className={classes.title} color="textSecondary" gutterBottom>
-                        Nasdaq
-                      </Typography>
-                      <IndexContainer indexname = "ONEQ" key="WPYXUSZL2IBH26QC" />
-                    </CardContent>
-                  </Card>
-                  </Grid>
-                  <Grid item xs={3}>
-                  <Card className={classes.card}>
-                    <CardContent>
-                      <Typography className={classes.title} color="textSecondary" gutterBottom>
-                        S&P 500 
-                      </Typography>
-                      <IndexContainer indexname = ".INX" key="HPMROQZGGJAOOA13"/>
-                    </CardContent>
-                  </Card>
-                  </Grid>
-                  <Grid item xs={3}>
-                  <Card className={classes.card}>
-                    <CardContent>
-                      <Typography className={classes.title} color="textSecondary" gutterBottom>
-                        NYSE
-                      </Typography>
-                      <IndexContainer indexname = "%5ENYA" key="5T77KQXSYKOQWAUM" />
-                    </CardContent>
-                  </Card>
-                  </Grid>
-                  
-                  </Grid>
-              <Grid xs={10} spacing={3} alignItems="center" justify="center" container className={classes.grid}>    
-              <Grid item xs={6} >
-              <Autocomplete
-                multiple
-                filterSelectedOptions
-                options={stored_stocks}
-                defaultValue={[]}
-                getOptionLabel={option => option.symbol}
-                onChange={this.handleChangeStockList}
-                onDelete={this.handleautodelete}
-                ListboxComponent={ListboxComponent}
-                renderInput={params => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    label="Stocks"
-                    fullWidth
-                  />
-                )}
-                renderOption={(option, { inputValue }) => {
-                  const matches = match(option.symbol + " - " + option.name, inputValue);
-                  const parts = parse(option.symbol + " - " + option.name, matches);
-          
-                  return (
-                    <div>
-                      {parts.map((part, index) => (
-                        <span key={index} style={{ fontWeight: part.highlight ? 900 : 300 }}>
-                          {part.text}
-                        </span>
-                      ))}
-                    </div>
-                  );
-                }}
-              />
-              </Grid>
-              <Grid item xs={6} >
-              <Autocomplete
-                multiple
-                filterSelectedOptions
-                options={metrics}
-                getOptionLabel={option => option}
-                defaultValue={[]}
-                onChange={this.handleChangeMetricsList}
-                onDelete={this.handleautodelete}
-                ListboxComponent={ListboxComponent}
-                renderInput={params => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    label="Metrics"
-                    fullWidth
-                  />
-                )}
-                renderOption={(option, { inputValue }) => {
-                  const matches = match(option, inputValue);
-                  const parts = parse(option, matches);
-          
-                  return (
-                    <div>
-                      {parts.map((part, index) => (
-                        <span key={index} style={{ fontWeight: part.highlight ? 900 : 300 }}>
-                          {part.text}
-                        </span>
-                      ))}
-                    </div>
-                  );}}
-               
-              />
-              
-              </Grid>
-              
-              </Grid>
-              
-              <Grid xs={10} spacing={3} alignItems="center" justify="center" container className={classes.grid}> 
-              <Grid item xs={6} >
-              <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stockdata} />
-              </Grid>
-              <Grid item xs={6}>
-              <Syncgraphs name='Fruits' delete={this.delete} graphcolors={this.state.graphcolors} metricsData={this.state.metricsData} metrics={this.state.selected_metrics} stocks={this.state.selectedstocks}/>
-              </Grid>
-              </Grid>
-              <Grid item xs={10}>
-              <MaterialTable
-              title="Company Data"
-              options={{toolbar: false, padding:'dense', paginationType:'stepped',columnsButton:'false'}}
-              columns={columns}
-              data={rowdata}
-            />
-            </Grid>
+                <Grid container justify="center" spacing={2}  >
+                <Grid spacing={24} alignItems="center" justify="center" container className={classes.grid}>
+                  <Grid xs={10} spacing={3} alignItems="center" justify="center" container className={classes.grid}>
+                    <Grid item xs={3} >
+                    <Card m={1} className={classes.card}>
+                      <CardContent>
+                        <Typography className={classes.title} color="textSecondary" gutterBottom>
+                          Dow Jones
+                        </Typography>
+                        <IndexContainer indexname = ".DJI" key="3GJ8FAC1VNENVM39" />
+                      </CardContent>
+                    </Card>
+                    </Grid>
+                    <Grid item xs={3} spacing={1}>
+                    <Card className={classes.card}>
+                      <CardContent>
+                        <Typography className={classes.title} color="textSecondary" gutterBottom>
+                          Nasdaq
+                        </Typography>
+                        <IndexContainer indexname = "ONEQ" key="WPYXUSZL2IBH26QC" />
+                      </CardContent>
+                    </Card>
+                    </Grid>
+                    <Grid item xs={3}>
+                    <Card className={classes.card}>
+                      <CardContent>
+                        <Typography className={classes.title} color="textSecondary" gutterBottom>
+                          S&P 500 
+                        </Typography>
+                        <IndexContainer indexname = ".INX" key="HPMROQZGGJAOOA13"/>
+                      </CardContent>
+                    </Card>
+                    </Grid>
+                    <Grid item xs={3}>
+                    <Card className={classes.card}>
+                      <CardContent>
+                        <Typography className={classes.title} color="textSecondary" gutterBottom>
+                          NYSE
+                        </Typography>
+                        <IndexContainer indexname = "%5ENYA" key="5T77KQXSYKOQWAUM" />
+                      </CardContent>
+                    </Card>
+                    </Grid>
+                    
+                    </Grid>
+                <Grid xs={10} spacing={3} alignItems="center" justify="center" container className={classes.grid}>    
+                <Grid item xs={6} >
+                <Autocomplete
+                  multiple
+                  filterSelectedOptions
+                  options={stored_stocks}
+                  defaultValue={[]}
+                  getOptionLabel={option => option.symbol}
+                  onChange={this.handleChangeStockList}
+                  onDelete={this.handleautodelete}
+                  ListboxComponent={ListboxComponent}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      label="Stocks"
+                      fullWidth
+                    />
+                  )}
+                  renderOption={(option, { inputValue }) => {
+                    const matches = match(option.symbol + " - " + option.name, inputValue);
+                    const parts = parse(option.symbol + " - " + option.name, matches);
             
+                    return (
+                      <div>
+                        {parts.map((part, index) => (
+                          <span key={index} style={{ fontWeight: part.highlight ? 900 : 300 }}>
+                            {part.text}
+                          </span>
+                        ))}
+                      </div>
+                    );
+                  }}
+                />
+                </Grid>
+                <Grid item xs={6} >
+                <Autocomplete
+                  multiple
+                  filterSelectedOptions
+                  options={metrics}
+                  getOptionLabel={option => option}
+                  defaultValue={[]}
+                  onChange={this.handleChangeMetricsList}
+                  onDelete={this.handleautodelete}
+                  ListboxComponent={ListboxComponent}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      label="Metrics"
+                      fullWidth
+                    />
+                  )}
+                  renderOption={(option, { inputValue }) => {
+                    const matches = match(option, inputValue);
+                    const parts = parse(option, matches);
+            
+                    return (
+                      <div>
+                        {parts.map((part, index) => (
+                          <span key={index} style={{ fontWeight: part.highlight ? 900 : 300 }}>
+                            {part.text}
+                          </span>
+                        ))}
+                      </div>
+                    );}}
+                
+                />
+                
+                </Grid>
+                
+                </Grid>
+                
+                <Grid xs={10} spacing={3} alignItems="center" justify="center" container className={classes.grid}> 
+                <Grid item xs={6} >
+                <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stockdata} />
+                </Grid>
+                <Grid item xs={6}>
+                <Syncgraphs width ={width} device="pc" name='Fruits' delete={this.delete} graphcolors={this.state.graphcolors} metricsData={this.state.metricsData} metrics={this.state.selected_metrics} stocks={this.state.selectedstocks}/>
+                </Grid>
+                </Grid>
+                <Grid item xs={10}>
+                <MaterialTable
+                title="Company Data"
+                options={{toolbar: false, padding:'dense', paginationType:'stepped',columnsButton:'false'}}
+                columns={columns}
+                data={rowdata}
+              />
+              </Grid>
+              
 
+                </Grid>
+                </Grid>
+          </div>
+          </React.Fragment>
+      )
+    }
+    else // mobile layout
+    {
+     return (
+     <React.Fragment>
+          <CssBaseline />
+          <Topbar currentPath={currentPath} />
+          <div className={classes.root}>
+
+          <div style={{ padding: 10 }}>
+          <Grid container spacing={3}>   
+          <Grid item xs>
+                <Autocomplete
+                  multiple
+                  filterSelectedOptions
+                  options={stored_stocks}
+                  defaultValue={[]}
+                  getOptionLabel={option => option.symbol}
+                  onChange={this.handleChangeStockList}
+                  onDelete={this.handleautodelete}
+                  ListboxComponent={ListboxComponent}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      label="Stocks"
+                      fullWidth
+                    />
+                  )}
+                  renderOption={(option, { inputValue }) => {
+                    const matches = match(option.symbol + " - " + option.name, inputValue);
+                    const parts = parse(option.symbol + " - " + option.name, matches);
+            
+                    return (
+                      <div>
+                        {parts.map((part, index) => (
+                          <span key={index} style={{ fontWeight: part.highlight ? 900 : 300 }}>
+                            {part.text}
+                          </span>
+                        ))}
+                      </div>
+                    );
+                  }}
+                />
+           
+           </Grid>
+           </Grid>
+           </div>
+           <div style={{ padding: 10 }}>
+          <Grid container spacing={3}>   
+          <Grid item xs>
+                
+                <Autocomplete
+                  multiple
+                  filterSelectedOptions
+                  options={metrics}
+                  getOptionLabel={option => option}
+                  defaultValue={[]}
+                  onChange={this.handleChangeMetricsList}
+                  onDelete={this.handleautodelete}
+                  ListboxComponent={ListboxComponent}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      label="Metrics"
+                      fullWidth
+                    />
+                  )}
+                  renderOption={(option, { inputValue }) => {
+                    const matches = match(option, inputValue);
+                    const parts = parse(option, matches);
+            
+                    return (
+                      <div>
+                        {parts.map((part, index) => (
+                          <span key={index} style={{ fontWeight: part.highlight ? 900 : 300 }}>
+                            {part.text}
+                          </span>
+                        ))}
+                      </div>
+                    );}}
+                
+                />
+                
+                
+                </Grid>
+                </Grid>
+                </div>
+                <Grid item  xs >
+                <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stockdata} />
+                </Grid>
+                <Grid item xs>
+                <Syncgraphs width ={width} device="mobile" name='Fruits' delete={this.delete} graphcolors={this.state.graphcolors} metricsData={this.state.metricsData} metrics={this.state.selected_metrics} stocks={this.state.selectedstocks}/>
+                </Grid>
+                <Grid item xs>
+                <MaterialTable
+                title="Company Data"
+                options={{toolbar: false, padding:'dense', paginationType:'stepped',columnsButton:'false'}}
+                columns={columns}
+                data={rowdata}
+              />
               </Grid>
-              </Grid>
-        </div>
-        </React.Fragment>
-    )
+          </div>
+          </React.Fragment>
+     )
+    }
   }
 }
 
