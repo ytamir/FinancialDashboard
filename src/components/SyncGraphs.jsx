@@ -31,7 +31,7 @@ function nFormatter(num, digits) {
   }
   if(lessthanzero)
   {
-    return -1*((num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol);
+    return ((-1*num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol);
   }
   else
   {

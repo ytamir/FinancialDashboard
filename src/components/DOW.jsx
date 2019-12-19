@@ -116,59 +116,126 @@ export default class IndexContainer extends React.Component {
         //console.log(newdata);
     
         //console.log('Our data is fetched');
-        cur.setState({
-            chartOptions: {
-              xAxis: {
-                type: 'datetime',
-                ordinal:true
-            },
-            chart: {
-              height: (7 / 16 * 100) + '%' // 16:9 ratio
-            },   
-            area: {
-              fillColor: {
-                  linearGradient: {
-                      x1: 0,
-                      y1: 0,
-                      x2: 0,
-                      y2: 1
-                  },
-                  stops: [
-                      [0, Highcharts.getOptions().colors[0]],
-                      [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                  ]
-              }
-            },
-              states: {
-                hover: {
-                    lineWidth: 1
-                }
-            },
-            exporting: {
-                buttons: {
-                    contextButton: {
-                        enabled: false
-                    }    
-                }
-            },
-            legend: {
-                enabled: false
-            },
-            series: [{
-                type: "area",
-                data: newdata,//[0].data.push(Math.random()*3 -1),
-                color: '#42f56c',
-                negativeColor: '#f54251' ,
-                threshold: threshold
-            }],
-            title: {
-                text: ''
+        if( cur.props.device === "mobile")
+        {
+          cur.setState({
+            tooltip: { enabled: false },
+              chartOptions: {
+                xAxis: {
+                  type: 'datetime',
+                  ordinal:true
               },
-            yAxis:{
-              min: minitem,
-              max: maxitem
-            }
-            }});
+              chart: {
+                height: (7 / 16 * 100) + '%' // 16:9 ratio
+              },   
+              area: {
+                fillColor: {
+                    linearGradient: {
+                        x1: 0,
+                        y1: 0,
+                        x2: 0,
+                        y2: 1
+                    },
+                    stops: [
+                        [0, Highcharts.getOptions().colors[0]],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                    ]
+                }
+              },
+                states: {
+                  hover: {
+                      lineWidth: 1
+                  }
+              },
+              exporting: {
+                  buttons: {
+                      contextButton: {
+                          enabled: false
+                      }    
+                  }
+              },
+              legend: {
+                  enabled: false
+              },
+              series: [{
+                  name: cur.props.indexname,
+                  type: "area",
+                  data: newdata,//[0].data.push(Math.random()*3 -1),
+                  color: '#42f56c',
+                  negativeColor: '#f54251' ,
+                  threshold: threshold
+              }],
+              title: {
+                  text: ''
+                },
+              yAxis:{
+                startOnTick: false,
+                endOnTick: false,
+                min: minitem,
+                max: maxitem
+              }
+              }});
+        }
+        else
+        {
+          cur.setState({
+              chartOptions: {
+                xAxis: {
+                  type: 'datetime',
+                  ordinal:true
+              },
+              chart: {
+                height: (7 / 16 * 100) + '%' // 16:9 ratio
+              },   
+              area: {
+                fillColor: {
+                    linearGradient: {
+                        x1: 0,
+                        y1: 0,
+                        x2: 0,
+                        y2: 1
+                    },
+                    stops: [
+                        [0, Highcharts.getOptions().colors[0]],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                    ]
+                }
+              },
+                states: {
+                  hover: {
+                      lineWidth: 1
+                  }
+              },
+              exporting: {
+                  buttons: {
+                      contextButton: {
+                          enabled: false
+                      }    
+                  }
+              },
+              legend: {
+                  enabled: false
+              },
+              series: [{
+                  name: cur.props.indexname,
+                  type: "area",
+                  data: newdata,//[0].data.push(Math.random()*3 -1),
+                  color: '#42f56c',
+                  negativeColor: '#f54251' ,
+                  threshold: threshold
+              }],
+              title: {
+                  text: ''
+                },
+              yAxis:{
+                startOnTick: false,
+                endOnTick: false,
+                min: minitem,
+                max: maxitem
+              }
+              }});
+        }
+        
           })
           .catch(function (error) {
             // handle error

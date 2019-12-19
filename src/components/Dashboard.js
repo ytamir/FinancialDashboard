@@ -89,6 +89,12 @@ const styles = theme => ({
     backgroundPosition: '0 400px',
     paddingBottom: 200
   },
+  cardcontent: {
+    padding: 1,
+    "&:last-child": {
+      paddingBottom: 1
+    }
+  },
   grid: {
     width: 1400,
     margin: `0 ${theme.spacing(0)}px`,
@@ -108,7 +114,7 @@ const styles = theme => ({
   rangeLabel: {
     display: 'flex',
     justifyContent: 'space-between',
-    paddingTop: theme.spacing(2)
+    paddingTop: theme.spacing(1)
   },
   topBar: {
     display: 'flex',
@@ -126,11 +132,11 @@ const styles = theme => ({
     height: 36
   },
   blockCenter: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
     textAlign: 'center'
   },
   block: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
   },
   loanAvatar: {
     display: 'inline-block',
@@ -821,41 +827,61 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                   <Grid xs={10} spacing={3} alignItems="center" justify="center" container className={classes.grid}>
                     <Grid item xs={3} >
                     <Card m={1} className={classes.card}>
-                      <CardContent>
+                      <CardContent className={{
+                            padding: 16,
+                            "&:last-child": {
+                              paddingBottom: 16
+                            }
+                          }}>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
                           Dow Jones
                         </Typography>
-                        <IndexContainer indexname = ".DJI" key="3GJ8FAC1VNENVM39" />
+                        <IndexContainer indexname = ".DJI" key="3GJ8FAC1VNENVM39" device="pc" />
                       </CardContent>
                     </Card>
                     </Grid>
                     <Grid item xs={3} spacing={1}>
                     <Card className={classes.card}>
-                      <CardContent>
+                    <CardContent className={{
+                            padding: 16,
+                            "&:last-child": {
+                              paddingBottom: 16
+                            }
+                          }}>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
                           Nasdaq
                         </Typography>
-                        <IndexContainer indexname = "ONEQ" key="WPYXUSZL2IBH26QC" />
+                        <IndexContainer indexname = "ONEQ" key="WPYXUSZL2IBH26QC" device="pc" />
                       </CardContent>
                     </Card>
                     </Grid>
                     <Grid item xs={3}>
                     <Card className={classes.card}>
-                      <CardContent>
+                    <CardContent className={{
+                            padding: 16,
+                            "&:last-child": {
+                              paddingBottom: 16
+                            }
+                          }}>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
                           S&P 500 
                         </Typography>
-                        <IndexContainer indexname = ".INX" key="HPMROQZGGJAOOA13"/>
+                        <IndexContainer indexname = ".INX" key="HPMROQZGGJAOOA13" device="pc"/>
                       </CardContent>
                     </Card>
                     </Grid>
                     <Grid item xs={3}>
                     <Card className={classes.card}>
-                      <CardContent>
+                    <CardContent className={{
+                            padding: 16,
+                            "&:last-child": {
+                              paddingBottom: 16
+                            }
+                          }}>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
                           NYSE
                         </Typography>
-                        <IndexContainer indexname = "%5ENYA" key="5T77KQXSYKOQWAUM" />
+                        <IndexContainer indexname = "%5ENYA" key="5T77KQXSYKOQWAUM" device="pc"/>
                       </CardContent>
                     </Card>
                     </Grid>
@@ -965,6 +991,51 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
           <CssBaseline />
           <Topbar currentPath={currentPath} />
           <div className={classes.root}>
+          <div style={{ padding: 4 }}>
+                  <Grid  spacing={1} alignItems="center" justify="center" container className={classes.grid}>
+                    <Grid item xs={3} >
+                    <Card m={1} className={classes.card}>
+                      <CardContent className={classes.cardcontent}>
+                        <Typography variant="caption" color="textSecondary" >
+                          Dow
+                        </Typography>
+                        <IndexContainer indexname = ".DJI" key="3GJ8FAC1VNENVM39" device="mobile"/>
+                      </CardContent>
+                    </Card>
+                    </Grid>
+                    <Grid item xs={3} >
+                    <Card className={classes.card}>
+                    <CardContent className={classes.cardcontent}>
+                        <Typography variant="caption" color="textSecondary" >
+                          Nasdaq
+                        </Typography>
+                        <IndexContainer indexname = "ONEQ" key="WPYXUSZL2IBH26QC" device="mobile"/>
+                      </CardContent>
+                    </Card>
+                    </Grid>
+                    <Grid item xs={3}>
+                    <Card className={classes.card}>
+                    <CardContent className={classes.cardcontent}>
+                        <Typography variant="caption" color="textSecondary" >
+                          S&P 500 
+                        </Typography>
+                        <IndexContainer indexname = ".INX" key="HPMROQZGGJAOOA13" device="mobile"/>
+                      </CardContent>
+                    </Card>
+                    </Grid>
+                    <Grid item xs={3}>
+                    <Card className={classes.card}>
+                    <CardContent className={classes.cardcontent}>
+                        <Typography variant="caption" color="textSecondary" >
+                          NYSE
+                        </Typography>
+                        <IndexContainer indexname = "%5ENYA" key="5T77KQXSYKOQWAUM" device="mobile" />
+                      </CardContent>
+                    </Card>
+                    </Grid>
+                    
+                    </Grid> 
+                    </div>
 
           <div style={{ padding: 10 }}>
           <Grid container spacing={3}>   
@@ -1008,7 +1079,6 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
            <div style={{ padding: 10 }}>
           <Grid container spacing={3}>   
           <Grid item xs>
-                
                 <Autocomplete
                   multiple
                   filterSelectedOptions
