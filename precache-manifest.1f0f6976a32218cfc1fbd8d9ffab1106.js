@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "67db8e545015a7c42b0111a148ccb7d4",
+    "revision": "d25d252cb0f5d1ccaf44ab48ab7531ba",
     "url": "/FinancialDashboard/index.html"
   },
   {
-    "revision": "e4797949268138f365a7",
+    "revision": "238ebe6a83ef4978fa04",
     "url": "/FinancialDashboard/static/css/main.bda77fa2.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/FinancialDashboard/static/js/2.d6a0919e.chunk.js"
   },
   {
-    "revision": "e4797949268138f365a7",
-    "url": "/FinancialDashboard/static/js/main.c058270d.chunk.js"
+    "revision": "238ebe6a83ef4978fa04",
+    "url": "/FinancialDashboard/static/js/main.19c79142.chunk.js"
   },
   {
     "revision": "8bd4426e18b264657482",
