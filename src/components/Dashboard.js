@@ -43,7 +43,7 @@ import {
   AreaChart, Area,
 } from 'recharts';
 
-import metricsjson from './metrics.json';
+
 
 //3GJ8FAC1VNENVM39
 
@@ -52,16 +52,20 @@ import metricsjson from './metrics.json';
 //import Highcharts from 'highcharts/highstock'
 //import StockHighChart from "constants/StockHighChart"
 
-require('highcharts/indicators/pivot-points')(Highcharts)
-require('highcharts/indicators/macd')(Highcharts)
-require('highcharts/modules/exporting')(Highcharts)
-require('highcharts/modules/map')(Highcharts)
+require('highcharts/indicators/pivot-points')(Highcharts);
+require('highcharts/indicators/macd')(Highcharts);
+require('highcharts/modules/exporting')(Highcharts);
+require('highcharts/modules/map')(Highcharts);
+
 
 
 const stocksjson = require('./data.json');
+const metricsjson = require('./metrics.json');
 const numeral = require('numeral');
 numeral.defaultFormat('0,000');
 const theme = ["#ac58e5","#E0488B","#9fd0cb","#e0d33a","#7566ff","#533f82","#7a255d","#365350","#a19a11","#3f4482"];
+
+
 
 
 function renderRow(props) {
@@ -965,7 +969,9 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                 <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stockdata} />
                 </Grid>
                 <Grid item xs={6}>
+                <Paper style={{maxHeight: 400, overflow: 'auto'}}>
                 <Syncgraphs width ={width} device="pc" name='Fruits' delete={this.delete} graphcolors={this.state.graphcolors} metricsData={this.state.metricsData} metrics={this.state.selected_metrics} stocks={this.state.selectedstocks}/>
+                </Paper>
                 </Grid>
                 </Grid>
                 <Grid item xs={10}>
@@ -996,7 +1002,7 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                     <Grid item xs={3} >
                     <Card m={1} className={classes.card}>
                       <CardContent className={classes.cardcontent}>
-                        <Typography variant="caption" color="textSecondary" >
+                        <Typography variant="body2" color="textSecondary" >
                           Dow
                         </Typography>
                         <IndexContainer indexname = ".DJI" key="3GJ8FAC1VNENVM39" device="mobile"/>
@@ -1120,7 +1126,9 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                 <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stockdata} />
                 </Grid>
                 <Grid item xs>
+                
                 <Syncgraphs width ={width} device="mobile" name='Fruits' delete={this.delete} graphcolors={this.state.graphcolors} metricsData={this.state.metricsData} metrics={this.state.selected_metrics} stocks={this.state.selectedstocks}/>
+                
                 </Grid>
                 <Grid item xs>
                 <MaterialTable
