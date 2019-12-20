@@ -99,8 +99,12 @@ const styles = theme => ({
       paddingBottom: 1
     }
   },
+  paper: {
+    padding: 1,
+    margin: 1
+  },
   grid: {
-    width: 1400,
+    width: 1300,
     margin: `0 ${theme.spacing(0)}px`,
     [theme.breakpoints.down('sm')]: {
       width: 'calc(100% - 20px)'
@@ -832,9 +836,9 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                     <Grid item xs={3} >
                     <Card m={1} className={classes.card}>
                       <CardContent className={{
-                            padding: 16,
+                            padding: 12,
                             "&:last-child": {
-                              paddingBottom: 16
+                              paddingBottom: 12
                             }
                           }}>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
@@ -847,9 +851,9 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                     <Grid item xs={3} spacing={1}>
                     <Card className={classes.card}>
                     <CardContent className={{
-                            padding: 16,
+                            padding: 12,
                             "&:last-child": {
-                              paddingBottom: 16
+                              paddingBottom: 12
                             }
                           }}>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
@@ -862,9 +866,9 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                     <Grid item xs={3}>
                     <Card className={classes.card}>
                     <CardContent className={{
-                            padding: 16,
+                            padding: 12,
                             "&:last-child": {
-                              paddingBottom: 16
+                              paddingBottom: 12
                             }
                           }}>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
@@ -877,9 +881,9 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                     <Grid item xs={3}>
                     <Card className={classes.card}>
                     <CardContent className={{
-                            padding: 16,
+                            padding: 12,
                             "&:last-child": {
-                              paddingBottom: 16
+                              paddingBottom: 12
                             }
                           }}>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
@@ -969,7 +973,7 @@ handleChangeMetricsList = (event,value) => { // onchangefunction for metrics aut
                 <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stockdata} />
                 </Grid>
                 <Grid item xs={6}>
-                <Paper style={{maxHeight: 400, overflow: 'auto'}}>
+                <Paper style={{maxHeight: 400, overflow: 'auto',margin: "1em"}} className={classes.paper} classes={{root:classes.paper}}>
                 <Syncgraphs width ={width} device="pc" name='Fruits' delete={this.delete} graphcolors={this.state.graphcolors} metricsData={this.state.metricsData} metrics={this.state.selected_metrics} stocks={this.state.selectedstocks}/>
                 </Paper>
                 </Grid>

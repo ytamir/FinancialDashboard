@@ -75,7 +75,7 @@ export default  class Syncgraphs extends React.Component {
       }
 
     render() {
-      if(this.props.metrics && this.props.stocks.length > 0)
+      if(this.props.metrics.length  > 0 && this.props.stocks.length > 0)
       {
       var prevthis = this;
       let countcolor = -1;
@@ -89,8 +89,8 @@ export default  class Syncgraphs extends React.Component {
         if ( prevthis.props.device === "pc")
         {
         return <React.Fragment> <h4>{element}</h4>  <LineChart
-        width={500}
-        height={200}
+        width={450}
+        height={170}
         data={prevthis.props.metricsData}
         syncId="anId"
         margin={{

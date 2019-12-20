@@ -107,7 +107,7 @@ export default class IndexContainer extends React.Component {
           lastitem = parseFloat(item[1]["1. open"]);
          
          // console.log(item);
-          newdata.push( [Date.parse(item[0]),parseFloat(item[1]["1. open"])]);
+          newdata.push( [new Date((item[0])),parseFloat(item[1]["1. open"])]);
         }
         console.log(minitem);
         console.log(maxitem);
