@@ -1,16 +1,17 @@
 {
   "files": {
     "main.css": "/FinancialDashboard/static/css/main.bda77fa2.chunk.css",
-    "main.js": "/FinancialDashboard/static/js/main.9f95f3fc.chunk.js",
-    "main.js.map": "/FinancialDashboard/static/js/main.9f95f3fc.chunk.js.map",
+    "main.js": "/FinancialDashboard/static/js/main.7326ad58.chunk.js",
+    "main.js.map": "/FinancialDashboard/static/js/main.7326ad58.chunk.js.map",
     "runtime~main.js": "/FinancialDashboard/static/js/runtime~main.97b86d57.js",
     "runtime~main.js.map": "/FinancialDashboard/static/js/runtime~main.97b86d57.js.map",
-    "static/js/2.f879619c.chunk.js": "/FinancialDashboard/static/js/2.f879619c.chunk.js",
-    "static/js/2.f879619c.chunk.js.map": "/FinancialDashboard/static/js/2.f879619c.chunk.js.map",
+    "static/js/2.0e6ecfbc.chunk.js": "/FinancialDashboard/static/js/2.0e6ecfbc.chunk.js",
+    "static/js/2.0e6ecfbc.chunk.js.map": "/FinancialDashboard/static/js/2.0e6ecfbc.chunk.js.map",
     "index.html": "/FinancialDashboard/index.html",
-    "precache-manifest.bb4bfbb7f578772a2966d55a59d265b6.js": "/FinancialDashboard/precache-manifest.bb4bfbb7f578772a2966d55a59d265b6.js",
+    "precache-manifest.e9e03598bc66efd1a831add648537f28.js": "/FinancialDashboard/precache-manifest.e9e03598bc66efd1a831add648537f28.js",
     "service-worker.js": "/FinancialDashboard/service-worker.js",
     "static/css/main.bda77fa2.chunk.css.map": "/FinancialDashboard/static/css/main.bda77fa2.chunk.css.map",
+    "static/media/finance.svg": "/FinancialDashboard/static/media/finance.6be47511.svg",
     "static/media/logo.svg": "/FinancialDashboard/static/media/logo.ee7cd8ed.svg",
     "static/media/shape.svg": "/FinancialDashboard/static/media/shape.43e76283.svg"
   }
