@@ -43,15 +43,6 @@ import {
   AreaChart, Area,
 } from 'recharts';
 
-
-
-//3GJ8FAC1VNENVM39
-
-
-
-//import Highcharts from 'highcharts/highstock'
-//import StockHighChart from "constants/StockHighChart"
-
 require('highcharts/indicators/pivot-points')(Highcharts);
 require('highcharts/indicators/macd')(Highcharts);
 require('highcharts/modules/exporting')(Highcharts);
@@ -189,71 +180,6 @@ const Row = ({ index, style }) => (
   </div>
 );
 
-
-
-/* <LineChart
-width={500}
-height={200}
-data={this.state.syncdata}
-syncId="anyId"
-margin={{
-  top: 10, right: 30, left: 0, bottom: 0,
-}}
->
-<CartesianGrid strokeDasharray="3 3" />
-<XAxis dataKey="name" />
-<YAxis />
-<Tooltip />
-<Line type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
-</LineChart>
-<p>Maybe some other content</p>
-<LineChart
-width={500}
-height={200}
-data={this.state.syncdata}
-syncId="anyId"
-margin={{
-  top: 10, right: 30, left: 0, bottom: 0,
-}}
->
-<CartesianGrid strokeDasharray="3 3" />
-<XAxis dataKey="name" />
-<YAxis />
-<Tooltip />
-<Line type="monotone" dataKey="pv" stroke="#82ca9d" fill="#82ca9d" />
-<Brush />
-</LineChart>
-<AreaChart
-width={500}
-height={200}
-data={this.state.syncdata}
-syncId="anyId"
-margin={{
-  top: 10, right: 30, left: 0, bottom: 0,
-}}
->
-<CartesianGrid strokeDasharray="3 3" />
-<XAxis dataKey="name" />
-<YAxis />
-<Tooltip />
-<Area type="monotone" dataKey="pv" stroke="#82ca9d" fill="#82ca9d" />
-</AreaChart>
-</div> */
-
-
-
-
-
-
-
-//url: "https://financialmodelingprep.com/images-New-jpg/CERN.jpg",
-// CompanyName:  "Cerner Corporation",
-// Exchange: "Nasdaq Global Select",
-// Range: "48.78-67.57",
-// Sector:  "Technology",
-// Industry:"Application Software",
-// CEO: "David Brent Shafer",
-// Website: "http://www.cerner.com"}
 function arr_diff (a1, a2) {
 
   var a = [], diff = [];
@@ -396,8 +322,6 @@ class Dashboard extends Component {
     }));
  }
 
-  
-  
   updatemetricsgraphs() {
     var stocks = "";
     var metrics = "";
@@ -516,43 +440,12 @@ class Dashboard extends Component {
     this.setState({ width: window.innerWidth });
   };
 
-  isEquivalent(a, b) {
-    // Create arrays of property names
-    var aProps = Object.getOwnPropertyNames(a);
-    var bProps = Object.getOwnPropertyNames(b);
-
-    // If number of properties is different,
-    // objects are not equivalent
-    if (aProps.length != bProps.length) {
-        return false;
-    }
-
-    for (var i = 0; i < aProps.length; i++) {
-        var propName = aProps[i];
-
-        // If values of same property are not equal,
-        // objects are not equivalent
-        if (a[propName] !== b[propName]) {
-            return false;
-        }
-    }
-
-    // If we made it this far, objects
-    // are considered equivalent
-    return true;
-}
-handleautodelete = (event,value) => {
-  console.log(event);
-}
 handleMetricsAddition = (event,value) => {
 const axios = require('axios');
   let {selected_metrics} = this.state;
   selected_metrics.push(value[value.length-1]);
   this.setState({selected_metrics: selected_metrics});
-  let current_metric = value[value.length-1];
-  var this2 = this;
-    var framePropsArray  = [];
-    this.updatemetricsgraphs();
+  this.updatemetricsgraphs();
 }
 handleMetricsDeletion = (event,value) => {
   // update metricData
@@ -679,41 +572,38 @@ handleStockAddition = (event,value) => { // add stock color same as sync graph
         });
       this.updatemetricsgraphs();
 }
-handleStockDeletion= (event,value) => {
-   // console.log(event);
-   // console.log(value);
+handleStockDeletion = ( event, value ) => {
+
     var newArr = [];
     var new_selected_stocks = [];
     var stocklist = "";
 
     //update title
-    for(var val of value)
+    for( var val of value )
     {
       stocklist += val.symbol + ", ";
-      new_selected_stocks.push(val.symbol);
+      new_selected_stocks.push( val.symbol );
     }
-
-    //update stock series inside of the graph
-    for (var prev_val of this.state.stockseriesdata)
-    {
-      for(var new_symbol of value)
-      {
-        if (prev_val.name  === new_symbol.symbol)
-        {
-          newArr.push(prev_val);
-          break;
-        }
-      }
-       
-    }
-
-    //remove last comma
-    if(stocklist !== "")
+    // Remove last comma in the graph title
+    if( stocklist !== "" )
     {
       stocklist = stocklist.substring(0,stocklist.length-2);
     }
-    
-    //update graph
+
+    // Update Stock Series Data
+    for( var prev_val of this.state.stockseriesdata )
+    {
+      for( var new_symbol of value )
+      {
+        if( prev_val.name  === new_symbol.symbol )
+        {
+          newArr.push( prev_val );
+          break;
+        }
+      }
+    }
+
+    // Update the stock series graph
     let options = {
       title: {
     text: stocklist
@@ -781,43 +671,38 @@ handleStockDeletion= (event,value) => {
     this.setState({metricsData: newmetricdata, stockdata: options, selectedstocks: new_selected_stocks, stockseriesdata:newArr, rowdata:new_rowdata});
 }
 
-handleChangeMetricsList = (event,value) => { // onchangefunction for metrics autocomplete
 
-  if( this.state.selected_metrics.length <  Object.keys(value).length) // new metric is selected
-  {
-    this.handleMetricsAddition(event, value);
-  }
-  else if (this.state.selected_metrics.length > Object.keys(value).length) // a metric is being deleted
-  {
-    this.handleMetricsDeletion(event, value);
+/*
+* Handles metrics addition and deletion from the select
+*/
+handleChangeMetricsList = (event,value) => {
 
-  }
-  else
-  {
-    console.log("uh oh, spaghettiOs");
-  }
+    if( this.state.selected_metrics.length < Object.keys(value).length )
+    {
+        this.handleMetricsAddition( event, value );
+    }
+    else if (this.state.selected_metrics.length > Object.keys(value).length)
+    {
+        this.handleMetricsDeletion( event, value );
+    }
 
 }
 
-  handleChangeStockList = (event,value) => {
-    //console.log(this.state);
-   // console.log(this.state.selectedstocks);
-   // console.log(this.state.selectedstocks.length);
-   // console.log(Object.keys(value).length);
-      if( this.state.selectedstocks.length <  Object.keys(value).length) // new stock is selected
-      {
-        this.handleStockAddition(event, value);
-      }
-      else if (this.state.selectedstocks.length > Object.keys(value).length) // a stock is being deleted
-      {
-        this.handleStockDeletion(event, value);
 
-      }
-      else
-      {
-        console.log("uh oh, spaghettiOs");
-      }
-  }  
+/*
+* Handles stock addition and deletion from the select
+*/
+handleChangeStockList = (event,value) => {
+    if( this.state.selectedstocks.length < Object.keys(value).length )
+    {
+        this.handleStockAddition( event, value );
+    }
+    else if( this.state.selectedstocks.length > Object.keys(value).length )
+    {
+        this.handleStockDeletion( event, value );
+    }
+
+}
 
   render() {
     const { classes } = this.props;
