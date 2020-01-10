@@ -340,7 +340,7 @@ class Dashboard extends Component {
       metrics = metrics + metric+ ";";
       metrics.replace(' ','%20');
     
-      let url = 'https://21a819a0.ngrok.io/financialy-metrics?stocks=' + stock + ';&metrics=' + metric + ';&frequency=ANNUAL';
+      let url = 'http://stockstats.mq2psnamep.us-east-1.elasticbeanstalk.com/financialy-metrics?stocks=' + stock + ';&metrics=' + metric + ';&frequency=ANNUAL';
      
       var ret = axios.get(url).then(function (response) {
           
@@ -492,7 +492,7 @@ handleStockAddition = (event,value) => { // add stock color same as sync graph
     // Make a request for a user with a given ID
     var ticker = value[value.length-1].symbol;
     selectedstocks.push(ticker);
-    var url = 'https://21a819a0.ngrok.io/get/daily_price/' + ticker + '/d/d';
+    var url = 'http://stockstats.mq2psnamep.us-east-1.elasticbeanstalk.com/get/daily_price/' + ticker + '/d/d';
     var profileurl = "https://financialmodelingprep.com/api/v3/company/profile/"  + ticker;
     let this2 = this;
     var ret = axios.get(url).then(function (response) 
