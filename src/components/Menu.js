@@ -1,31 +1,11 @@
+/*
+* Main Menu, Can Add More Pages Here I Think
+*/
 const Menu = [
   {
     label: "Dashboard",
     pathname: "/"
   }
-  //,
-  // {
-  //   label: "Dashboard",
-  //   pathname: "/dashboard"
-  // },
-  // {
-  //   label: "Signup",
-  //   pathname: "/signup"
-  // },
-  // {
-  //   label: "Wizard",
-  //   pathname: "/wizard"
-  // },
-  // {
-  //   label: "Cards",
-  //   pathname: "/cards"
-  // },
-  // {
-  //   label: "Github",
-  //   pathname: "https://github.com/alexanmtz/material-sense",
-  //   external: true
-  // }
-
 ];
 
 export default Menu;

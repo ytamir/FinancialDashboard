@@ -1,80 +1,42 @@
-import React,  { Component } from 'react';
-import withStyles from '@material-ui/styles/withStyles';
-import { withRouter, Link } from 'react-router-dom';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Slider from '@material-ui/core/Slider';
-import Button from '@material-ui/core/Button';
-import Avatar from '@material-ui/core/Avatar';
-import SimpleLineChart from './SimpleLineChart';
-import Months from './common/Months';
-import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
-import Loading from './common/Loading';
-import MultiSelect from './selects/multiselect';
-import HighchartsStock from 'highcharts/highstock';
-import HighchartsReact from 'highcharts-react-official';
-import Highcharts from 'highcharts'
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import TextField from '@material-ui/core/TextField';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Box from '@material-ui/core/Box';
-import { sizing } from '@material-ui/system';
-import { FixedSizeList as List } from 'react-window';
-import StockChart from './Stock.jsx'
-import Syncgraphs from './SyncGraphs'
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import IndexContainer from './DOW'
-import LineElement from './LineElement'
-import { ResponsiveBump } from '@nivo/bump'
-import Topbar from './Topbar';
-import { FixedSizeList } from 'react-window';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+/* IMPORTS */
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
+
+import IndexContainer from '../components_charts/DOW'
+import StockChart     from '../components_charts/Stock.jsx'
+import Syncgraphs     from '../components_charts/SyncGraphs'
+
+import Highcharts      from 'highcharts'
+import HighchartsStock from 'highcharts/highstock';
+import HighchartsReact from 'highcharts-react-official';
+
+import Loading       from './Loading';
 import MaterialTable from 'material-table';
-import XYFrame from "semiotic/lib/XYFrame";
-import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Brush,
-  AreaChart, Area,
-} from 'recharts';
+import Topbar        from './Topbar';
 
-require('highcharts/indicators/pivot-points')(Highcharts);
-require('highcharts/indicators/macd')(Highcharts);
-require('highcharts/modules/exporting')(Highcharts);
-require('highcharts/modules/map')(Highcharts);
+import Autocomplete  from '@material-ui/lab/Autocomplete';
+import Card          from '@material-ui/core/Card';
+import CardActions   from '@material-ui/core/CardActions';
+import CardContent   from '@material-ui/core/CardContent';
+import CssBaseline   from '@material-ui/core/CssBaseline';
+import Grid          from '@material-ui/core/Grid';
+import Paper         from '@material-ui/core/Paper';
+import { sizing }    from '@material-ui/system';
+import TextField     from '@material-ui/core/TextField';
+import Typography    from '@material-ui/core/Typography';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import withStyles    from '@material-ui/styles/withStyles';
+
+import React,  { Component } from 'react';
+import { withRouter, Link }  from 'react-router-dom';
+import { FixedSizeList }     from 'react-window';
+
+/* File Constants */
+const stocksjson = require('../data/data.json');
+const metricsjson = require('../data/metrics.json');
 
 
-
-const stocksjson = require('./data.json');
-const metricsjson = require('./metrics.json');
-const numeral = require('numeral');
-numeral.defaultFormat('0,000');
-const theme = ["#ac58e5","#E0488B","#9fd0cb","#e0d33a","#7566ff","#533f82","#7a255d","#365350","#a19a11","#3f4482"];
-
-
-
-
-function renderRow(props) {
-  const { data, index, style } = props;
-
-  return React.cloneElement(data[index], {
-    style: {
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap',
-      display: 'block',
-      ...style,
-    },
-  });
-}
-
-const backgroundShape = require('../images/shape.svg');
-
+/* Styling */
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -174,20 +136,13 @@ const styles = theme => ({
   }
 });
 
-const Row = ({ index, style }) => (
-  <div className={index % 2 ? 'ListItemOdd' : 'ListItemEven'} style={style}>
-    Row {index}
-  </div>
-);
-
+/* Used to detect deleted stocks and metrics in search bars */
 function arr_diff (a1, a2) {
 
   var a = [], diff = [];
-
   for (var i = 0; i < a1.length; i++) {
       a[a1[i]] = true;
   }
-
   for (var i = 0; i < a2.length; i++) {
       if (a[a2[i]]) {
           delete a[a2[i]];
@@ -195,20 +150,28 @@ function arr_diff (a1, a2) {
           a[a2[i]] = true;
       }
   }
-
   for (var k in a) {
       diff.push(k);
   }
-
   return diff;
 }
 
-function createData(url, companyName, exchange, range, sector, industry, ceo, website) {
-  return { url, companyName, exchange, range, sector, industry, ceo, website };
-}
-const monthRange = Months;
-const  toptions1 = { series: [{name: 'Profit', data: [100,200,30,100,30,50,100]},{name: 'Profit2', data: [222,22,1,123,1,312,100]} ]};
+/* Used handle row additions in the company information box */
+function renderRow(props) {
+  const { data, index, style } = props;
 
+  return React.cloneElement(data[index], {
+    style: {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      display: 'block',
+      ...style,
+    },
+  });
+}
+
+/* Company Information Box */
 const ListboxComponent = React.forwardRef(function ListboxComponent(props, ref) {
   const { children, ...other } = props;
   const smUp = useMediaQuery(theme => theme.breakpoints.up('sm'));
@@ -217,7 +180,7 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(props, ref) 
 
   const outerElementType = React.useMemo(() => {
     return React.forwardRef((props2, ref2) => <div ref={ref2} {...props2} {...other} />);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div ref={ref}>
@@ -240,8 +203,7 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(props, ref) 
 
 class Dashboard extends Component {
 
-
-  
+  /* PAGE STATE */
   state = {
     colorcount: 0,
     width: window.innerWidth,
@@ -252,17 +214,17 @@ class Dashboard extends Component {
     graphcolors: ["#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"],//['#1EB980','#FF6859','#B15DFF','#72DEFF','#045D56'],
     stored_stocks: JSON.parse(stocksjson),
     metrics: JSON.parse(metricsjson),
-    stockdata: {chart:
-      {
-        backgroundColor: null,
-        
-      },
-      rangeSelector: {
-        enabled: false
-      },
-      credits: false
+    stockdata: {
+        chart:
+          {
+            backgroundColor: null,
+          },
+          rangeSelector: {
+            enabled: false
+          },
+        credits: false
     },
-     columns: [
+    columns: [
       {field: 'url',
         Title: 'Company',
         render: rowData => <img src={rowData.url} style={{width: 50, borderRadius: '50%'}}/>
@@ -295,25 +257,14 @@ class Dashboard extends Component {
       {
         title: 'Website',
         field: 'website',
-        render: rowData => <Link href={rowData.Website} > 
+        render: rowData => <Link href={rowData.Website} >
         {rowData.Website}
       </Link>
       }
 
     ],
-    rowdata: []
-      // { 
-      // url: "https://financialmodelingprep.com/images-New-jpg/CERN.jpg",
-      // CompanyName:  "Cerner Corporation",
-      // Exchange: "Nasdaq Global Select",
-      // Range: "48.78-67.57",
-      // Sector:  "Technology",
-      // Industry:"Application Software",
-      // CEO: "David Brent Shafer",
-      // Website: "http://www.cerner.com"}
-    ,
+    rowdata: [],
     metricsData:[]
-    
   };
 
   delete(id){
@@ -402,30 +353,7 @@ class Dashboard extends Component {
     }
   }
   }
-  
-  updateValues() {
-    const { amount, period, start } = this.state;
-    const monthlyInterest = (amount)*(Math.pow(0.01*(1.01), period))/(Math.pow(0.01, period - 1));
-    const totalInterest = monthlyInterest * (period + start);
-    const totalPayment = amount + totalInterest;
-    const monthlyPayment = period > start ? totalPayment/(period - start) : totalPayment/(period);
-    //console.log(stockdata);
-    
-   
 
-    const data = Array.from({length: period + start}, (value, i) => {
-      const delayed = i < start;
-      return {
-        name: monthRange[i],
-        'Type': delayed ? 0 : Math.ceil(monthlyPayment).toFixed(0),
-        'OtherType': Math.ceil(monthlyInterest).toFixed(0)
-      };
-    })
-      this.setState({monthlyInterest, totalInterest, totalPayment, monthlyPayment, data});
- 
-
-    
-  }
   componentWillMount() {
     window.addEventListener('resize', this.handleWindowSizeChange);
   }
@@ -707,7 +635,7 @@ handleChangeStockList = (event,value) => {
   render() {
     const { classes } = this.props;
     const { width, amount, period, start, monthlyPayment,
-      monthlyInterest, data, loading, options,metrics, stockdata, toptions, selectedstocks, stored_stocks, bumpdata, names , rowdata, columns } = this.state;
+      monthlyInterest, data, loading, options,metrics, stockdata, toptions, selectedstocks, stored_stocks, names , rowdata, columns } = this.state;
     const currentPath = this.props.location.pathname;
     const isMobile = width <= 500;
 

@@ -4,7 +4,6 @@ import {
     AreaChart, Area,
   } from 'recharts';
 import React,  { Component } from 'react';
-import LineElement from './LineElement';
 import NumberFormat from 'react-number-format';
 
 function nFormatter(num, digits) {
