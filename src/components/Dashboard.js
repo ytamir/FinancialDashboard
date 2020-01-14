@@ -289,7 +289,7 @@ class Dashboard extends Component {
     for(var metric of this.state.selected_metrics)
     {
       metrics = metrics + metric+ ";";
-      metrics.replace(' ','%20');
+      metrics.replace(' ','%20'); // test
     
       let url = 'http://stockstats.mq2psnamep.us-east-1.elasticbeanstalk.com/financialy-metrics?stocks=' + stock + ';&metrics=' + metric + ';&frequency=ANNUAL';
      
