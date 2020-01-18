@@ -3,25 +3,20 @@ import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 
 import IndexContainer from '../components_charts/DOW'
-import StockChart     from '../components_charts/Stock.jsx'
 import Syncgraphs     from '../components_charts/SyncGraphs'
 
-import Highcharts      from 'highcharts'
 import HighchartsStock from 'highcharts/highstock';
 import HighchartsReact from 'highcharts-react-official';
 
-import Loading       from './Loading';
 import MaterialTable from 'material-table';
 import Topbar        from './Topbar';
 
 import Autocomplete  from '@material-ui/lab/Autocomplete';
 import Card          from '@material-ui/core/Card';
-import CardActions   from '@material-ui/core/CardActions';
 import CardContent   from '@material-ui/core/CardContent';
 import CssBaseline   from '@material-ui/core/CssBaseline';
 import Grid          from '@material-ui/core/Grid';
 import Paper         from '@material-ui/core/Paper';
-import { sizing }    from '@material-ui/system';
 import TextField     from '@material-ui/core/TextField';
 import Typography    from '@material-ui/core/Typography';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -32,8 +27,9 @@ import { withRouter, Link }  from 'react-router-dom';
 import { FixedSizeList }     from 'react-window';
 
 /* File Constants */
-const stocksjson = require('../data/data.json');
-const metricsjson = require('../data/metrics.json');
+const axios       = require('axios');
+const stocks_json  = require('../data/data.json');
+const metrics_json = require('../data/metrics.json');
 
 
 /* Styling */
@@ -65,12 +61,6 @@ const styles = theme => ({
   },
   loadingState: {
     opacity: 0.05
-  },
-  paper: {
-    padding: theme.spacing(0),
-    margin: theme.spacing(0),
-    textAlign: 'left',
-    color: theme.palette.text.secondary
   },
   rangeLabel: {
     display: 'flex',
@@ -143,7 +133,7 @@ function arr_diff (a1, a2) {
   for (var i = 0; i < a1.length; i++) {
       a[a1[i]] = true;
   }
-  for (var i = 0; i < a2.length; i++) {
+  for (i = 0; i < a2.length; i++) {
       if (a[a2[i]]) {
           delete a[a2[i]];
       } else {
@@ -180,7 +170,7 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(props, ref) 
 
   const outerElementType = React.useMemo(() => {
     return React.forwardRef((props2, ref2) => <div ref={ref2} {...props2} {...other} />);
-  }, []);
+  }, [other]);
 
   return (
     <div ref={ref}>
@@ -205,16 +195,17 @@ class Dashboard extends Component {
 
   /* PAGE STATE */
   state = {
-    colorcount: 0,
+    color_count: 0,
     width: window.innerWidth,
-    stockseriesdata: [],
-    selectedstocks: [],
+    stock_series_data: [],
+    selected_stocks: [],
     selected_metrics: [],
     data: [],
-    graphcolors: ["#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"],//['#1EB980','#FF6859','#B15DFF','#72DEFF','#045D56'],
-    stored_stocks: JSON.parse(stocksjson),
-    metrics: JSON.parse(metricsjson),
-    stockdata: {
+    graph_colors: ["#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b",
+                  "#91e8e1"],
+    stored_stocks: JSON.parse(stocks_json),
+    metrics: JSON.parse(metrics_json),
+    stock_data: {
         chart:
           {
             backgroundColor: null,
@@ -227,7 +218,7 @@ class Dashboard extends Component {
     columns: [
       {field: 'url',
         Title: 'Company',
-        render: rowData => <img src={rowData.url} style={{width: 50, borderRadius: '50%'}}/>
+        render: row_data => <img src={row_data.url} alt = "" style={{width: 50, borderRadius: '50%'}}/>
       },
       {
         title: 'Company Name',
@@ -257,33 +248,32 @@ class Dashboard extends Component {
       {
         title: 'Website',
         field: 'website',
-        render: rowData => <Link href={rowData.Website} >
-        {rowData.Website}
+        render: row_data => <Link href={row_data.Website} >
+        {row_data.Website}
       </Link>
       }
 
     ],
-    rowdata: [],
+    row_data: [],
     metricsData:[]
   };
 
   delete(id){
     this.setState(prevState => ({
-        data: prevState.data.filter(el => el != id )
+        data: prevState.data.filter(el => el !== id )
     }));
  }
 
   updatemetricsgraphs() {
-    var stocks = "";
     var metrics = "";
     const axios = require('axios');
     var this2 = this;
-    if(this.state.selected_metrics.length === 0 || this.state.selectedstocks.length === 0)
+    if(this.state.selected_metrics.length === 0 || this.state.selected_stocks.length === 0)
     {
       return;
     }
 
-    for ( let stock of this2.state.selectedstocks)
+    for ( let stock of this2.state.selected_stocks)
     {
     
     for(var metric of this.state.selected_metrics)
@@ -293,7 +283,7 @@ class Dashboard extends Component {
     
       let url = 'https://backend.stockstats.io/financialy-metrics?stocks=' + stock + ';&metrics=' + metric + ';&frequency=ANNUAL';
      
-      var ret = axios.get(url).then(function (response) {
+      axios.get(url).then(function (response) {
           
           // for each stock in returned object
           console.log(response.data.return_data);
@@ -369,7 +359,7 @@ class Dashboard extends Component {
   };
 
 handleMetricsAddition = (event,value) => {
-const axios = require('axios');
+
   let {selected_metrics} = this.state;
   selected_metrics.push(value[value.length-1]);
   this.setState({selected_metrics: selected_metrics});
@@ -378,7 +368,6 @@ const axios = require('axios');
 handleMetricsDeletion = (event,value) => {
   // update metricData
   var newmetricdata = this.state.metricsData;
-  var new_metrics_list = this.state.metricsData;
   //update list of metrics
   
   var deletedmetric = arr_diff(this.state.selected_metrics,value);
@@ -393,7 +382,7 @@ handleMetricsDeletion = (event,value) => {
    // console.log(item);
     if( item !== undefined)
     {
-    for (var [key,num] of Object.entries(item)) //loop through data points
+    for (var [key,] of Object.entries(item)) //loop through data points
     {
       for(var metric of deletedmetric) // loop through new metrics list
       {
@@ -414,78 +403,71 @@ handleMetricsDeletion = (event,value) => {
   this.setState({metricsData: newmetricdata, selected_metrics:value});
   
 }
-handleStockAddition = (event,value) => { // add stock color same as sync graph
-  const axios = require('axios');
-    let {graphcolors, selectedstocks, stockdata, stockseriesdata} = this.state;
-    // Make a request for a user with a given ID
+handleStockAddition = (event,value) => {
+
+    // Get current graph information
+    let { graph_colors, selected_stocks, stock_data, stock_series_data } = this.state;
+
+    // Get ticker symbol passed in and construct url
     var ticker = value[value.length-1].symbol;
-    selectedstocks.push(ticker);
+    selected_stocks.push(ticker);
     var url = 'https://backend.stockstats.io/get/daily_price/' + ticker + '/d/d';
-    var profileurl = "https://financialmodelingprep.com/api/v3/company/profile/"  + ticker;
-    let this2 = this;
-    var ret = axios.get(url).then(function (response) 
-    { // handle success
-        let parsed_data = JSON.parse(response.data[0].stock_data);
-        let newArray = [];
-       // console.log(parsed_data);
-        for ( let i=0; i < Object.keys(parsed_data.Date).length; i++){
-          //let temp = { date:parsed_data.Date[i], close:parsed_data.Close[i], high:parsed_data.High[i], volume:parsed_data.Volume[i], open:parsed_data.Open[i], low:parsed_data.Low[i] };
-          let temp = [ parsed_data.Date[i], parsed_data.Open[i]];//, parsed_data.High[i], parsed_data.Low[i], parsed_data.Close[i]];
-          newArray.push(temp);
-        }
 
-        let stocklist =""; //creat title for time series chart
-        for (const ticker of selectedstocks)
+    // Get state outside of asynch request
+    let current_state = this;
+
+    // Send API Request and Handle to get Stock Price
+    axios.get(url).then(function (response)
         {
-          stocklist += ticker + ", ";
-        }
 
-        stocklist = stocklist.substring(0,stocklist.length-2);
-        stockseriesdata.push({compare: 'percent', name:ticker, data: newArray, color: graphcolors[selectedstocks.length-1]});
-
-        let options = {
-          chart:
-          {
-            backgroundColor: null
-          },
-          title: {
-        text: stocklist
-          },
-          
-          series: stockseriesdata,
-          line: {
-            dataLabels: {
-                enabled: true
+        // Store new Data Opening Price for Each Day
+        let parsed_data = JSON.parse( response.data[0].stock_data );
+        let new_data = [];
+        for ( let i=0; i < Object.keys(parsed_data.Date).length; i++ )
+            {
+            let temp = [ parsed_data.Date[i], parsed_data.Open[i]];
+            new_data.push(temp);
             }
-          },
-          rangeSelector: {
-            enabled: true
-          },
-          xAxis : { 
-            gridLineWidth: 0,
-          },
-          yAxis : { 
-            gridLineWidth: 0,
-            labels: {
-              formatter: function () {
-                  return (this.value > 0 ? ' + ' : '') + this.value + '%';
-              }
-          }
-          }
 
+        // Store the chart title
+        let char_title = "";
+        for( const ticker of selected_stocks )
+            {
+            char_title += ticker + ", ";
+            }
+        char_title = char_title.substring(0,char_title.length-2);
+
+
+
+        // Format the new data to push to our state
+        stock_series_data.push( { compare: 'percent', name: ticker, data: new_data,
+                                color: graph_colors[ selected_stocks.length-1 ] } );
+        let options = {
+          chart: { backgroundColor: null },
+          title: { text: char_title },
+          series: stock_series_data,
+          line: {  dataLabels: { enabled: true } },
+          rangeSelector: { enabled: true },
+          xAxis : {  gridLineWidth: 0 },
+          yAxis : { gridLineWidth: 0, labels: { formatter: function () {
+                    return (this.value > 0 ? ' + ' : '') + this.value + '%';
+                  } } }
         };
-     stockdata = options;
+        stock_data = options;
 
-    this2.setState({stockdata, selectedstocks,stockseriesdata});
+        // Set the current state
+        current_state.setState( { stock_data, selected_stocks,stock_series_data } );
     
-        })
+        } );
+
+    // Send API Request and Handle to get company info
+    var profile_url = "https://financialmodelingprep.com/api/v3/company/profile/"  + ticker;
     this.setState( () => {
-      fetch(profileurl)
-        .then(response => response.json())
-        .then(res => {
-          
-          this.setState({
-            rowdata: [...this.state.rowdata, {
+      fetch( profile_url )
+        .then( response => response.json() )
+        .then( res => {
+          this.setState( {
+            row_data: [...this.state.row_data, {
               symbol: res.symbol, 
               url: res.profile.image,
               companyName:  res.profile.companyName,
@@ -494,11 +476,11 @@ handleStockAddition = (event,value) => { // add stock color same as sync graph
               sector:  res.profile.sector,
               industry: res.profile.industry,
               ceo: res.profile.ceo,
-              website: res.profile.website}] });
+              website: res.profile.website}] } );
         
-          });
-        });
-      this.updatemetricsgraphs();
+      } );
+    } );
+
 }
 handleStockDeletion = ( event, value ) => {
 
@@ -506,20 +488,21 @@ handleStockDeletion = ( event, value ) => {
     var new_selected_stocks = [];
     var stocklist = "";
 
-    //update title
+    // Update the Page Title
     for( var val of value )
-    {
-      stocklist += val.symbol + ", ";
-      new_selected_stocks.push( val.symbol );
-    }
+        {
+        stocklist += val.symbol + ", ";
+        new_selected_stocks.push( val.symbol );
+        }
+
     // Remove last comma in the graph title
     if( stocklist !== "" )
-    {
-      stocklist = stocklist.substring(0,stocklist.length-2);
-    }
+        {
+        stocklist = stocklist.substring(0,stocklist.length-2);
+        }
 
     // Update Stock Series Data
-    for( var prev_val of this.state.stockseriesdata )
+    for( var prev_val of this.state.stock_series_data )
     {
       for( var new_symbol of value )
       {
@@ -544,10 +527,10 @@ handleStockDeletion = ( event, value ) => {
       }
     };
 
-    //update rowdata
+    //update row_data
    
-    var new_rowdata = [];
-    for(var rdata of this.state.rowdata)
+    var new_row_data = [];
+    for(var rdata of this.state.row_data)
     {
       for(var new_stock of new_selected_stocks)
       {
@@ -555,38 +538,26 @@ handleStockDeletion = ( event, value ) => {
         if (rdata.symbol === new_stock)
         {
             //delete rdata.tableData;
-            new_rowdata.push(rdata);
+            new_row_data.push(rdata);
             break;
         }
       }
     }
-
-    // update metricData
-    //console.log(value);
-    //console.log(this.state.selectedstocks);
-    
     var newstocks = [];
     for (let s of value)
     {
       newstocks.push(s.symbol);
     }
     
-    let deletedstock = arr_diff(newstocks, this.state.selectedstocks);
+    let deletedstock = arr_diff(newstocks, this.state.selected_stocks);
     var newmetricdata = this.state.metricsData;
     let cnt = 0;
     for (var item of this.state.metricsData) //loop through each date
     {
-      for (var [key,val1] of Object.entries(item)) //loop through data points
+      for (var [key,] of Object.entries( item ) ) //loop through data points
       {
         for(var stock of deletedstock) // loop through deleted stocks
-        {       
-          // console.log("item");
-          // console.log(item);
-          // console.log("key");
-          // console.log(key);
-          // console.log("deleted stock");
-          // console.log(stock);
-
+        {
           if( key.startsWith(stock)) // keep data from stocks that still exist
           {            
             delete newmetricdata[cnt][key];
@@ -596,9 +567,8 @@ handleStockDeletion = ( event, value ) => {
       cnt++;
     }
 
-    this.setState({metricsData: newmetricdata, stockdata: options, selectedstocks: new_selected_stocks, stockseriesdata:newArr, rowdata:new_rowdata});
+    this.setState({metricsData: newmetricdata, stock_data: options, selected_stocks: new_selected_stocks, stock_series_data:newArr, row_data:new_row_data});
 }
-
 
 /*
 * Handles metrics addition and deletion from the select
@@ -606,36 +576,33 @@ handleStockDeletion = ( event, value ) => {
 handleChangeMetricsList = (event,value) => {
 
     if( this.state.selected_metrics.length < Object.keys(value).length )
-    {
+        {
         this.handleMetricsAddition( event, value );
-    }
-    else if (this.state.selected_metrics.length > Object.keys(value).length)
-    {
+        }
+    else if( this.state.selected_metrics.length > Object.keys(value).length )
+        {
         this.handleMetricsDeletion( event, value );
-    }
-
+        }
 }
-
 
 /*
 * Handles stock addition and deletion from the select
 */
 handleChangeStockList = (event,value) => {
-    if( this.state.selectedstocks.length < Object.keys(value).length )
-    {
+    if( this.state.selected_stocks.length < Object.keys(value).length )
+        {
         this.handleStockAddition( event, value );
-    }
-    else if( this.state.selectedstocks.length > Object.keys(value).length )
-    {
+        }
+    else if( this.state.selected_stocks.length > Object.keys(value).length )
+        {
         this.handleStockDeletion( event, value );
-    }
+        }
 
 }
 
   render() {
     const { classes } = this.props;
-    const { width, amount, period, start, monthlyPayment,
-      monthlyInterest, data, loading, options,metrics, stockdata, toptions, selectedstocks, stored_stocks, names , rowdata, columns } = this.state;
+    const { width, metrics, stock_data, stored_stocks , row_data, columns } = this.state;
     const currentPath = this.props.location.pathname;
     const isMobile = width <= 500;
 
@@ -788,11 +755,11 @@ handleChangeStockList = (event,value) => {
                 
                 <Grid xs={10} spacing={3} alignItems="center" justify="center" container className={classes.grid}> 
                 <Grid item xs={6} >
-                <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stockdata} />
+                <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stock_data} />
                 </Grid>
                 <Grid item xs={6}>
                 <Paper style={{maxHeight: 400, overflow: 'auto',margin: "1em"}} className={classes.paper} classes={{root:classes.paper}}>
-                <Syncgraphs width ={width} device="pc" name='Fruits' delete={this.delete} graphcolors={this.state.graphcolors} metricsData={this.state.metricsData} metrics={this.state.selected_metrics} stocks={this.state.selectedstocks}/>
+                <Syncgraphs width ={width} device="pc" name='Fruits' delete={this.delete} graph_colors={this.state.graph_colors} metricsData={this.state.metricsData} metrics={this.state.selected_metrics} stocks={this.state.selected_stocks}/>
                 </Paper>
                 </Grid>
                 </Grid>
@@ -801,7 +768,7 @@ handleChangeStockList = (event,value) => {
                 title="Company Data"
                 options={{toolbar: false, padding:'dense', paginationType:'stepped',columnsButton:'false'}}
                 columns={columns}
-                data={rowdata}
+                data={row_data}
               />
               </Grid>
               
@@ -945,11 +912,11 @@ handleChangeStockList = (event,value) => {
                 </Grid>
                 </div>
                 <Grid item  xs >
-                <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stockdata} />
+                <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stock_data} />
                 </Grid>
                 <Grid item xs>
                 
-                <Syncgraphs width ={width} device="mobile" name='Fruits' delete={this.delete} graphcolors={this.state.graphcolors} metricsData={this.state.metricsData} metrics={this.state.selected_metrics} stocks={this.state.selectedstocks}/>
+                <Syncgraphs width ={width} device="mobile" name='Fruits' delete={this.delete} graph_colors={this.state.graph_colors} metricsData={this.state.metricsData} metrics={this.state.selected_metrics} stocks={this.state.selected_stocks}/>
                 
                 </Grid>
                 <Grid item xs>
@@ -957,7 +924,7 @@ handleChangeStockList = (event,value) => {
                 title="Company Data"
                 options={{toolbar: false, padding:'dense', paginationType:'stepped',columnsButton:'false'}}
                 columns={columns}
-                data={rowdata}
+                data={row_data}
               />
               </Grid>
           </div>

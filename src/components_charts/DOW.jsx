@@ -9,7 +9,8 @@ export default class IndexContainer extends React.Component {
     this.state = { // TODO remove chart title
       chartOptions: {
         title: {
-            text: ''
+            text: '',
+            visible: false
           },
         exporting: {
             buttons: {
@@ -45,9 +46,6 @@ export default class IndexContainer extends React.Component {
         yAxis:{
             visible: false
         },
-        title:{
-            visible: false
-        }
       }
     }
     // setInterval(function(){
@@ -76,7 +74,6 @@ export default class IndexContainer extends React.Component {
         
 
         let aplha_url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol='+this.props.indexname+'&interval=5min&outputsize=compact&apikey='+this.props.key;
-        let url = "https://financialmodelingprep.com/api/v3/majors-indexes/" + this.props.indexname;
         axios.get(aplha_url).then(function (response) {
             // handle success
            
@@ -258,7 +255,6 @@ export default class IndexContainer extends React.Component {
 
   timer() {
     //this.setState({ currentCount: 10 });
-    var a = this.state;
     //console.log("a");
     //console.log(a);
 

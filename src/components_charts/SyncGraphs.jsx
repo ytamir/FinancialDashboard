@@ -1,9 +1,8 @@
 
 import {
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,ReferenceLine, Brush,
-    AreaChart, Area,
+    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend
   } from 'recharts';
-import React,  { Component } from 'react';
+import React from 'react';
 import NumberFormat from 'react-number-format';
 
 function nFormatter(num, digits) {
@@ -109,7 +108,7 @@ export default  class Syncgraphs extends React.Component {
             prevthis.props.stocks.map((id) => { //for every selected stock
               countcolor++; // basis' | 'basisClosed' | 'basisOpen' | 'linear' | 'linearClosed' | 'natural' | 'monotoneX' | 'monotoneY' | 'monotone' | 'step' | 'stepBefore' | 'stepAfter'
               // use element and id to get the name of stock metric combo
-            return ( <Line name={id} type="monotoneX" key={id} dataKey={id+" "+element} stroke={prevthis.props.graphcolors[countcolor-1]} strokeWidth={3} />)  
+            return ( <Line name={id} type="monotoneX" key={id} dataKey={id+" "+element} stroke={prevthis.props.graph_colors[countcolor-1]} strokeWidth={3} />)
             })
         }
       </LineChart> </React.Fragment> }
@@ -139,7 +138,7 @@ export default  class Syncgraphs extends React.Component {
             prevthis.props.stocks.map((id) => { //for every selected stock
               countcolor++; // basis' | 'basisClosed' | 'basisOpen' | 'linear' | 'linearClosed' | 'natural' | 'monotoneX' | 'monotoneY' | 'monotone' | 'step' | 'stepBefore' | 'stepAfter'
               // use element and id to get the name of stock metric combo
-            return ( <Line name={id} type="monotoneX" key={id} dataKey={id+" "+element} stroke={prevthis.props.graphcolors[countcolor-1]} strokeWidth={3} />)  
+            return ( <Line name={id} type="monotoneX" key={id} dataKey={id+" "+element} stroke={prevthis.props.graph_colors[countcolor-1]} strokeWidth={3} />)
             })
         }
       </LineChart> </React.Fragment>
