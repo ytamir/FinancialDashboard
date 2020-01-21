@@ -403,6 +403,10 @@ handleMetricsDeletion = (event,value) => {
   this.setState({metricsData: newmetricdata, selected_metrics:value});
   
 }
+
+/*
+* Handles stock addition from the select
+*/
 handleStockAddition = (event,value) => {
 
     // Get current graph information
@@ -457,6 +461,7 @@ handleStockAddition = (event,value) => {
 
         // Set the current state
         current_state.setState( { stock_data, selected_stocks,stock_series_data } );
+
     
         } );
 
@@ -481,93 +486,95 @@ handleStockAddition = (event,value) => {
       } );
     } );
 
+    // Update Metrics Graphs
+    this.updatemetricsgraphs();
+
 }
+
+/*
+* Handles stock deletion from the select
+*/
 handleStockDeletion = ( event, value ) => {
 
-    var newArr = [];
+    var new_data = [];
     var new_selected_stocks = [];
-    var stocklist = "";
+    var stock_title = "";
 
     // Update the Page Title
     for( var val of value )
         {
-        stocklist += val.symbol + ", ";
+        stock_title += val.symbol + ", ";
         new_selected_stocks.push( val.symbol );
         }
-
     // Remove last comma in the graph title
-    if( stocklist !== "" )
+    if( stock_title !== "" )
         {
-        stocklist = stocklist.substring(0,stocklist.length-2);
+        stock_title = stock_title.substring( 0,stock_title.length-2 );
         }
 
-    // Update Stock Series Data
+    // Update the stock series data
     for( var prev_val of this.state.stock_series_data )
-    {
-      for( var new_symbol of value )
-      {
-        if( prev_val.name  === new_symbol.symbol )
         {
-          newArr.push( prev_val );
-          break;
+        for( var new_symbol of value )
+            {
+            if( prev_val.name  === new_symbol.symbol )
+                {
+                new_data.push( prev_val );
+                break;
+                }
+            }
         }
-      }
-    }
 
     // Update the stock series graph
-    let options = {
-      title: {
-    text: stocklist
-      },
-      series: newArr,
-      line: {
-        dataLabels: {
-            enabled: true
-        }
-      }
-    };
+    let options =
+        { title: { text: stock_title },
+          series: new_data,
+          line: { dataLabels: { enabled: true } }
+        };
 
-    //update row_data
-   
+    // Update Row Data
     var new_row_data = [];
-    for(var rdata of this.state.row_data)
-    {
-      for(var new_stock of new_selected_stocks)
-      {
-      
-        if (rdata.symbol === new_stock)
+    for( var r_data of this.state.row_data )
         {
-            //delete rdata.tableData;
-            new_row_data.push(rdata);
-            break;
+        for( var new_stock of new_selected_stocks )
+            {
+            if ( r_data.symbol === new_stock )
+                {
+                new_row_data.push( r_data );
+                break;
+                }
+            }
         }
-      }
-    }
-    var newstocks = [];
-    for (let s of value)
-    {
-      newstocks.push(s.symbol);
-    }
-    
-    let deletedstock = arr_diff(newstocks, this.state.selected_stocks);
-    var newmetricdata = this.state.metricsData;
+
+    // Find difference in stock list between current state and select list
+    var new_stocks = [];
+    for( var stock of value )
+        {
+        new_stocks.push( stock.symbol );
+        }
+
+    // Update metrics state data
+    var deleted_stock = arr_diff( new_stocks, this.state.selected_stocks );
+    var new_metric_data = this.state.metricsData;
     let cnt = 0;
-    for (var item of this.state.metricsData) //loop through each date
-    {
-      for (var [key,] of Object.entries( item ) ) //loop through data points
-      {
-        for(var stock of deletedstock) // loop through deleted stocks
+    for( var item of this.state.metricsData )
         {
-          if( key.startsWith(stock)) // keep data from stocks that still exist
-          {            
-            delete newmetricdata[cnt][key];
-          }
+      for( var [ key, ] of Object.entries( item ) )
+        {
+        for( let stock of deleted_stock )
+            {
+            if( key.startsWith( stock ) )
+                {
+                delete new_metric_data[cnt][key];
+                }
+            }
         }
-      }
       cnt++;
     }
 
-    this.setState({metricsData: newmetricdata, stock_data: options, selected_stocks: new_selected_stocks, stock_series_data:newArr, row_data:new_row_data});
+    // Set State Data
+    this.setState( { metricsData: new_metric_data, stock_data: options, selected_stocks: new_selected_stocks,
+                     stock_series_data: new_data, row_data: new_row_data } );
 }
 
 /*
