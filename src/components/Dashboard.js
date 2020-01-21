@@ -127,26 +127,32 @@ const styles = theme => ({
 });
 
 /* Used to detect deleted stocks and metrics in search bars */
-function arr_diff (a1, a2) {
+function arr_diff( a1, a2 ) {
 
-  var a = [], diff = [];
-  for (var i = 0; i < a1.length; i++) {
-      a[a1[i]] = true;
-  }
-  for (i = 0; i < a2.length; i++) {
-      if (a[a2[i]]) {
-          delete a[a2[i]];
-      } else {
-          a[a2[i]] = true;
-      }
-  }
-  for (var k in a) {
-      diff.push(k);
-  }
+    var a = [], diff = [];
+    for( var i = 0; i < a1.length; i++ )
+    {
+    a[ a1[ i ] ] = true;
+    }
+    for( i = 0; i < a2.length; i++ )
+        {
+        if ( a[ a2[ i ] ] )
+            {
+            delete a[ a2[ i ] ];
+            }
+        else
+            {
+            a[ a2[ i ] ] = true;
+            }
+        }
+    for( var k in a )
+        {
+        diff.push(k);
+        }
   return diff;
 }
 
-/* Used handle row additions in the company information box */
+/* Used to handle row additions in the company information box */
 function renderRow(props) {
   const { data, index, style } = props;
 
@@ -264,7 +270,7 @@ class Dashboard extends Component {
     }));
  }
 
-  updatemetricsgraphs() {
+  update_metrics_graphs() {
     var metrics = "";
     const axios = require('axios');
     var this2 = this;
@@ -358,50 +364,44 @@ class Dashboard extends Component {
     this.setState({ width: window.innerWidth });
   };
 
+
+/*
+* Handles metrics addition from the select
+*/
 handleMetricsAddition = (event,value) => {
-
-  let {selected_metrics} = this.state;
-  selected_metrics.push(value[value.length-1]);
-  this.setState({selected_metrics: selected_metrics});
-  this.updatemetricsgraphs();
+  let { selected_metrics } = this.state;
+  selected_metrics.push (value[ value.length-1 ] );
+  this.setState( { selected_metrics: selected_metrics } );
+  this.update_metrics_graphs();
 }
+
+
+/*
+* Handles metrics deletion from the select
+*/
 handleMetricsDeletion = (event,value) => {
-  // update metricData
-  var newmetricdata = this.state.metricsData;
-  //update list of metrics
-  
-  var deletedmetric = arr_diff(this.state.selected_metrics,value);
-  //console.log(deletedmetric);
+    var current_metric_data = this.state.metricsData;
+    var deleted_metric = arr_diff(this.state.selected_metrics,value);
+    let count = 0;
 
-
-  let count = 0;
-
-  //console.log(this.state.metricsData);
-  for (var item of this.state.metricsData) //loop through each date
-  {
-   // console.log(item);
-    if( item !== undefined)
+    for( var item of this.state.metricsData )   //loop through metric
     {
-    for (var [key,] of Object.entries(item)) //loop through data points
-    {
-      for(var metric of deletedmetric) // loop through new metrics list
-      {
-      //  console.log("key: " + key + " metric: " + metric +  "item.date: " + item.date );
-        if( key.includes(metric)) // keep data from stocks that still exist
+        if( item !== undefined )
         {
-       //   console.log("DELETEDkey: " + key + " metric: " + metric +  "item.date: " + item.date );
-          delete newmetricdata[count][key];
+            for( var [ key,]  of Object.entries( item ) ) //loop through data points
+            {
+                for( var metric of deleted_metric ) // loop through new metrics list
+                {
+                if( key.includes( metric ) )
+                    {
+                    delete current_metric_data[count][key];
+                    }
+                }
+            }
         }
-      }
-    }
-    }
     count++;
-  }
-
- // console.log(newmetricdata);
-
-  this.setState({metricsData: newmetricdata, selected_metrics:value});
-  
+    }
+  this.setState( { metricsData: current_metric_data, selected_metrics: value } );
 }
 
 /*
@@ -486,8 +486,8 @@ handleStockAddition = (event,value) => {
       } );
     } );
 
-    // Update Metrics Graphs
-    this.updatemetricsgraphs();
+    // Update Metrics Graphs to account for new stocks
+    this.update_metrics_graphs();
 
 }
 
@@ -571,7 +571,6 @@ handleStockDeletion = ( event, value ) => {
         }
       cnt++;
     }
-
     // Set State Data
     this.setState( { metricsData: new_metric_data, stock_data: options, selected_stocks: new_selected_stocks,
                      stock_series_data: new_data, row_data: new_row_data } );
@@ -613,7 +612,7 @@ handleChangeStockList = (event,value) => {
     const currentPath = this.props.location.pathname;
     const isMobile = width <= 500;
 
-    if (!isMobile) //is pc
+    if( !isMobile ) //is pc
     {
       return (
         <React.Fragment>
