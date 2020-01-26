@@ -3,8 +3,12 @@
 */
 const Menu = [
   {
-    label: "Dashboard",
+    label: "Stocks",
     pathname: "/"
+  },
+  {
+    label: "ETFs",
+    pathname: "/etf"
   }
 ];
 
