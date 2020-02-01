@@ -764,9 +764,8 @@ handleChangeStockList = (event,value) => {
                 <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stock_data} />
                 </Grid>
                 <Grid item xs={6}>
-                <Paper style={{maxHeight: 400, overflow: 'auto',margin: "1em"}} className={classes.paper} classes={{root:classes.paper}}>
-                <Syncgraphs width ={width} device="pc" name='Fruits' delete={this.delete} graph_colors={this.state.graph_colors} metricsData={this.state.metricsData} metrics={this.state.selected_metrics} stocks={this.state.selected_stocks}/>
-                </Paper>
+                <Syncgraphs width ={width} device="pc" delete={this.delete} graph_colors={this.state.graph_colors} metricsData={this.state.metricsData} metrics={this.state.selected_metrics} stocks={this.state.selected_stocks}/>
+               
                 </Grid>
                 </Grid>
                 <Grid item xs={10}>
