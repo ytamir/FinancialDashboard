@@ -4,6 +4,8 @@ import match from 'autosuggest-highlight/match';
 
 import IndexContainer from '../components_charts/DOW'
 import Syncgraphs     from '../components_charts/SyncGraphs'
+import PieChartETF    from '../components_charts/PieChart'
+import RadarChartETF  from '../components_charts/RadarChart'
 
 import HighchartsStock from 'highcharts/highstock';
 import HighchartsReact from 'highcharts-react-official';
@@ -729,7 +731,8 @@ handleChangeStockList = (event,value) => {
                 </Grid>
                 
                 </Grid>
-                
+                <PieChartETF></PieChartETF>
+                <RadarChartETF></RadarChartETF>
                 <Grid xs={10} spacing={3} alignItems="center" justify="center" container className={classes.grid}> 
                 <Grid item xs={6} >
                 <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stock_data} />
