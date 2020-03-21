@@ -17,18 +17,39 @@ const data02 = [
   { name: 'Group E', value: 3908 }, { name: 'Group F', value: 4800 },
 ];
 
-export default class PieChartETF extends PureComponent {
-  static jsfiddleUrl = 'https://jsfiddle.net/alidingling/k9jkog04/';
-
+export default class PieChartETF extends React.Component {
+    
   render() {
-    return (
-      <PieChart width={400} height={400}>
-        <Pie dataKey="value" isAnimationActive={true} data={data01} cx={200} cy={200} outerRadius={80} fill="#8884d8" label />
+    console.log(this.props.etfs);
+    console.log(this.props.voo);
+    console.log(Object.entries(this.props.voo.Holdings));
+    let new_voo_obj = [];
+    for(let a of Object.entries(this.props.voo.Holdings) )
+    {
+      new_voo_obj.push({name: a[0], value: parseInt(a[1]['Percentage of Portfolio'])});
+    }
+    console.log(new_voo_obj);
+    if( this.props.etfs.length > 0)
+    {
+    console.log(this.props.etfs);
+    return <div>
+        {
+        this.props.etfs.map(function(id,i){ // for every selected metric
+         
+      return <React.Fragment>
+          <PieChart width={400} height={400}>
+        <Pie dataKey="value" isAnimationActive={true} data={new_voo_obj} cx={200} cy={200} outerRadius={80} fill="#8884d8" label />
         {data01.map((entry, index) => (
         <Cell key={`cell-${index}`} fill={COLORS[index]}/>
         ))}
         <Tooltip />
-      </PieChart>
-    );
-  }
+      </PieChart></React.Fragment>
+      })}
+      </div>
+    }
+    else
+    {
+        return null;
+    }    
+}
 }

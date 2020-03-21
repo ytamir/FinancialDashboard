@@ -122,7 +122,6 @@ export default  class Syncgraphs extends React.Component {
         else // mobile
         {
           let graphwidth = Math.floor(prevthis.props.width*.9);
-          //console.log()
           return <React.Fragment> 
             <h4>{element}</h4>  
             <LineChart
