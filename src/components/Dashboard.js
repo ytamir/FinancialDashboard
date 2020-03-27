@@ -287,7 +287,7 @@ class Dashboard extends Component {
       metrics = metrics + metric+ ";";
       metrics.replace(' ','%20'); 
     
-      let url = 'https://backend.stockstats.io/financialy-metrics?stocks=' + stock + ';&metrics=' + metric + ';&frequency=ANNUAL';
+      let url = 'https://flask.stockstats.io/financialy-metrics?stocks=' + stock + ';&metrics=' + metric + ';&frequency=ANNUAL';
      
       axios.get(url).then(function (response) {
           
@@ -415,7 +415,7 @@ handleStockAddition = (event,value) => {
     // Get ticker symbol passed in and construct url
     var ticker = value[value.length-1].symbol;
     selected_stocks.push(ticker);
-    var url = 'https://backend.stockstats.io/get/daily_price/' + ticker + '/d/d';
+    var url = 'https://flask.stockstats.io/get/daily_price/' + ticker + '/d/d';
 
     // Get state outside of asynch request
     let current_state = this;
