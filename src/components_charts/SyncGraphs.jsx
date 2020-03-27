@@ -4,6 +4,7 @@ import {
   } from 'recharts';
 import React from 'react';
 import NumberFormat from 'react-number-format';
+import Paper         from '@material-ui/core/Paper';
 
 function nFormatter(num, digits) {
   let lessthanzero = false;
@@ -78,7 +79,9 @@ export default  class Syncgraphs extends React.Component {
       var prevthis = this;
       let countcolor = -1;
       return <div>
-      <ul>{
+      <ul>
+      <Paper style={{maxHeight: 450, width: 520, overflow: 'auto',margin: "1em",padding: "1em"}}>
+        {
 
       
         
@@ -86,8 +89,10 @@ export default  class Syncgraphs extends React.Component {
         countcolor = 0;
         if ( prevthis.props.device === "pc")
         {
-        return <React.Fragment> <h4>{element}</h4>  <LineChart
-        width={450}
+        return <React.Fragment>
+        
+        <h4>{element}</h4>  <LineChart
+        width={500}
         height={170}
         data={prevthis.props.metricsData}
         syncId="anId"
@@ -111,12 +116,15 @@ export default  class Syncgraphs extends React.Component {
             return ( <Line name={id} type="monotoneX" key={id} dataKey={id+" "+element} stroke={prevthis.props.graph_colors[countcolor-1]} strokeWidth={3} />)
             })
         }
-      </LineChart> </React.Fragment> }
+      </LineChart>
+     
+       </React.Fragment> }
         else // mobile
         {
           let graphwidth = Math.floor(prevthis.props.width*.9);
-          //console.log()
-          return <React.Fragment> <h4>{element}</h4>  <LineChart
+          return <React.Fragment> 
+            <h4>{element}</h4>  
+            <LineChart
         width={graphwidth}
         height={150}
         data={prevthis.props.metricsData}
@@ -141,9 +149,12 @@ export default  class Syncgraphs extends React.Component {
             return ( <Line name={id} type="monotoneX" key={id} dataKey={id+" "+element} stroke={prevthis.props.graph_colors[countcolor-1]} strokeWidth={3} />)
             })
         }
-      </LineChart> </React.Fragment>
+      </LineChart>
+      </React.Fragment>
         }
-        })} </ul>      
+        })} 
+        </Paper>
+        </ul>      
         </div>
       
       }

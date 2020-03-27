@@ -287,7 +287,7 @@ class Dashboard extends Component {
       metrics = metrics + metric+ ";";
       metrics.replace(' ','%20'); 
     
-      let url = 'https://backend.stockstats.io/financialy-metrics?stocks=' + stock + ';&metrics=' + metric + ';&frequency=ANNUAL';
+      let url = 'https://flask.stockstats.io/financialy-metrics?stocks=' + stock + ';&metrics=' + metric + ';&frequency=ANNUAL';
      
       axios.get(url).then(function (response) {
           
@@ -415,7 +415,7 @@ handleStockAddition = (event,value) => {
     // Get ticker symbol passed in and construct url
     var ticker = value[value.length-1].symbol;
     selected_stocks.push(ticker);
-    var url = 'https://backend.stockstats.io/get/daily_price/' + ticker + '/d/d';
+    var url = 'https://flask.stockstats.io/get/daily_price/' + ticker + '/d/d';
 
     // Get state outside of asynch request
     let current_state = this;
@@ -764,9 +764,8 @@ handleChangeStockList = (event,value) => {
                 <HighchartsReact highcharts={HighchartsStock} title="d" constructorType={'stockChart'} options={stock_data} />
                 </Grid>
                 <Grid item xs={6}>
-                <Paper style={{maxHeight: 400, overflow: 'auto',margin: "1em"}} className={classes.paper} classes={{root:classes.paper}}>
-                <Syncgraphs width ={width} device="pc" name='Fruits' delete={this.delete} graph_colors={this.state.graph_colors} metricsData={this.state.metricsData} metrics={this.state.selected_metrics} stocks={this.state.selected_stocks}/>
-                </Paper>
+                <Syncgraphs width ={width} device="pc" delete={this.delete} graph_colors={this.state.graph_colors} metricsData={this.state.metricsData} metrics={this.state.selected_metrics} stocks={this.state.selected_stocks}/>
+               
                 </Grid>
                 </Grid>
                 <Grid item xs={10}>
