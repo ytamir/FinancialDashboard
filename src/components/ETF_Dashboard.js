@@ -7,7 +7,7 @@ import Syncgraphs     from '../components_charts/SyncGraphs'
 import PieChartETF    from '../components_charts/PieChart'
 import RadarChartETF  from '../components_charts/RadarChart'
 
-import HighchartsStock from 'highcharts/highstock';
+import HighchartsStock, { normalizeTickInterval } from 'highcharts/highstock';
 import HighchartsReact from 'highcharts-react-official';
 
 import MaterialTable from 'material-table';
@@ -215,6 +215,7 @@ class ETF_Dashboard extends Component {
     color_count: 0,
     width: window.innerWidth,
     stock_series_data: [],
+    holdings: {},
     selected_stocks: [],
     selected_metrics: [],
     data: [],
@@ -313,7 +314,7 @@ class ETF_Dashboard extends Component {
               for ( let i= parsed_metric_data.dates.length-1; i >= 0; i--) // parse all dates sent
               {
                   let temp = { date: parseInt(firstyear-i)};
-                  temp[parsed_metric_data.ticker+' '+parsed_metric_data.metric] = parseFloat(parsed_metric_data.data[i]);
+                  temp[parsed_metric_data.ticker+' '+ parsed_metric_data.metric] = parseFloat(parsed_metric_data.data[i]);
                   newArray.push(temp);
               }
               if (this2.state.metricsData.length === 0) // First Metric
@@ -400,7 +401,7 @@ handleMetricsDeletion = (event,value) => {
     {
         if( item !== undefined )
         {
-            for( var [ key,]  of Object.entries( item ) ) //loop through data points
+            for( var [ key, val2]  of Object.entries( item ) ) //loop through data points
             {
                 for( var metric of deleted_metric ) // loop through new metrics list
                 {
@@ -422,7 +423,7 @@ handleMetricsDeletion = (event,value) => {
 handleStockAddition = (event,value) => {
 
     // Get current graph information
-    let { graph_colors, selected_stocks, stock_data, stock_series_data } = this.state;
+    let { graph_colors, selected_stocks, stock_data, stock_series_data, holdings } = this.state;
 
     // Get ticker symbol passed in and construct url
     var ticker = value[value.length-1].symbol;
@@ -471,35 +472,33 @@ handleStockAddition = (event,value) => {
         };
         stock_data = options;
 
-        // Set the current state
-        current_state.setState( { stock_data, selected_stocks,stock_series_data } );
+
+        // Send API Request ato get holdings
+        axios.get('https://flask.stockstats.io/etf-holdings?ticker=' + ticker).then(function (response)
+        {
+          let obj = [];
+          console.log(response);
+          for(let a of Object.entries(response.data.Holdings) )
+          {
+            obj.push({name: a[0], value: parseInt(a[1]['Percentage of Portfolio'])});
+          }
+          holdings[ticker] = obj;
+          console.log(holdings);
+          //holdingsstate.setState({holdings: old_holdings});
+
+           // Set the current state
+        current_state.setState( { stock_data, selected_stocks, stock_series_data,holdings } );
+
+        // Send API Request and Handle to get company info
+        var profile_url = "https://financialmodelingprep.com/api/v3/company/profile/"  + ticker;
+
+        // Update Metrics Graphs to account for new stocks
+        current_state.update_metrics_graphs();
+        });
+        });
+
 
     
-        } );
-
-    // Send API Request and Handle to get company info
-    var profile_url = "https://financialmodelingprep.com/api/v3/company/profile/"  + ticker;
-    this.setState( () => {
-      fetch( profile_url )
-        .then( response => response.json() )
-        .then( res => {
-          this.setState( {
-            row_data: [...this.state.row_data, {
-              symbol: res.symbol, 
-              url: res.profile.image,
-              companyName:  res.profile.companyName,
-              exchange: res.profile.exchange,
-              range: res.profile.range,
-              sector:  res.profile.sector,
-              industry: res.profile.industry,
-              ceo: res.profile.ceo,
-              website: res.profile.website}] } );
-        
-      } );
-    } );
-
-    // Update Metrics Graphs to account for new stocks
-    this.update_metrics_graphs();
 
 }
 
@@ -620,7 +619,7 @@ handleChangeStockList = (event,value) => {
 
   render() {
     const { classes } = this.props;
-    const { selected_stocks, width, metrics, stock_data, stored_etfs , row_data, columns, voo } = this.state;
+    const { selected_stocks, width, holdings, metrics, stock_data, stored_etfs , row_data, columns, voo } = this.state;
     const currentPath = this.props.location.pathname;
     const isMobile = width <= 500;
 
@@ -735,7 +734,7 @@ handleChangeStockList = (event,value) => {
                 </Grid>
                 
                 </Grid>
-                <PieChartETF etfs={selected_stocks} voo={voo}/>
+                <PieChartETF etfs={selected_stocks} holdings={holdings}/>
                 <RadarChartETF>  </RadarChartETF>
                 <Grid xs={10} spacing={3} alignItems="center" justify="center" container className={classes.grid}> 
                 <Grid item xs={6} >

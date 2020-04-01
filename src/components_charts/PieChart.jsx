@@ -21,24 +21,27 @@ export default class PieChartETF extends React.Component {
     
   render() {
     console.log(this.props.etfs);
-    console.log(this.props.voo);
-    console.log(Object.entries(this.props.voo.Holdings));
-    let new_voo_obj = [];
+    /*let new_voo_obj = [];
     for(let a of Object.entries(this.props.voo.Holdings) )
     {
       new_voo_obj.push({name: a[0], value: parseInt(a[1]['Percentage of Portfolio'])});
     }
-    console.log(new_voo_obj);
+    console.log(new_voo_obj);*/
     if( this.props.etfs.length > 0)
     {
+    let holdings = this.props.holdings;
     console.log(this.props.etfs);
+    console.log(this.props.holdings);
     return <div>
         {
+          
         this.props.etfs.map(function(id,i){ // for every selected metric
+          console.log(id);
+          console.log(i);
          
       return <React.Fragment>
           <PieChart width={400} height={400}>
-        <Pie dataKey="value" isAnimationActive={true} data={new_voo_obj} cx={200} cy={200} outerRadius={80} fill="#8884d8" label />
+        <Pie dataKey="value" isAnimationActive={true} data={holdings[id]} cx={200} cy={200} outerRadius={80} fill="#8884d8" label />
         {data01.map((entry, index) => (
         <Cell key={`cell-${index}`} fill={COLORS[index]}/>
         ))}
