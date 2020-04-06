@@ -25,19 +25,39 @@ const data = [
   },
 ];
 
-export default class RadarChartETF extends PureComponent {
+export default class RadarChartETF extends  React.Component  {
   static jsfiddleUrl = 'https://jsfiddle.net/alidingling/dpgb3xjq/';
 
   render() {
-    return (
-      <RadarChart cx={300} cy={250} outerRadius={150} width={500} height={500} data={data}>
+    let prevthis = this;
+    let countcolor = -1;
+    console.log(this.state);
+    if(this.props.radial.length  > 0 )
+      {
+    return (            
+      <RadarChart cx={300} cy={250} outerRadius={150} width={600} height={500} data={prevthis.props.radial}>
         <PolarGrid />
         <PolarAngleAxis dataKey="subject" />
-        <PolarRadiusAxis angle={30} domain={[0, 150]} />
-        <Radar name="Mike" dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.8} />
-        <Radar name="Lily" dataKey="B" stroke="#82ca9d" fill="#82ca9d" fillOpacity={0.4} />
+        <PolarRadiusAxis angle={30} domain={[0, this.props.maxval]} />
+        {
+            prevthis.props.etfs.map((id) => { //for every selected stock
+              //countcolor++; // basis' | 'basisClosed' | 'basisOpen' | 'linear' | 'linearClosed' | 'natural' | 'monotoneX' | 'monotoneY' | 'monotone' | 'step' | 'stepBefore' | 'stepAfter'
+              // use element and id to get the name of stock metric combo
+              countcolor++;
+              console.log(id);
+            return ( <Radar name={id} dataKey={id} stroke={prevthis.props.graph_colors[countcolor-1]} fill={prevthis.props.graph_colors[countcolor-1]} fillOpacity={0.5} />)
+            })
+         //<Radar name="Mike" dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.8} />
+       // <Radar name="Lily" dataKey="B" stroke="#82ca9d" fill="#82ca9d" fillOpacity={0.4} />
+        }
+       
         <Legend />
       </RadarChart>
     );
+      }
+      else
+      {
+        return null;
+      }
   }
 }
